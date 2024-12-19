@@ -30,6 +30,15 @@ $ apt [-y][install | remove | search] 软件名称
 
 - `-y`：在安装过程中出现`yes/no`自动`yes`
 
+## 2.2 安装包安装
+
+Ubuntu安装包为`.deb`文件，需要使用Debian包管理系统的核心工具进行安装和卸载
+
+- **安装软件包**：使用 `dpkg -i package.deb` 命令可以安装本地的 `.deb` 文件。
+- **卸载软件包**：`dpkg -r package_name` 用于卸载软件包，但会保留配置文件；而 `dpkg --purge package_name` 则会彻底移除软件包及其配置文件。
+- **查询信息**：`dpkg -l` 列出所有已安装的软件包；`dpkg -L package_name` 显示指定软件包安装的所有文件列表；`dpkg -s package_name` 获取指定软件包的详细状态信息。
+- **重新配置软件包**：如果安装过程中出现问题或需要重新运行配置脚本，可以使用 `dpkg-reconfigure package_name`。
+
 # 3.systemctl命令
 
 Linux很多（内置/第三方）软件支持使用`systemctl`命令控制：启动、停止、开机自启
@@ -426,7 +435,7 @@ $ sar -n DEV num1 num2
 
 # 11.环境变量
 
-环境变量时系统在运行时，记录的一些关键性信息，以辅助系统运行
+环境变量时系统在运行时，记录的一些关键性信息，以辅助系统运行（**相当于系统级的全局变量，不被单独的某个程序所独有，任何程序都能访问**）
 
 使用`env`命令查看记录的环境变量，实际的内容为键值对
 
@@ -450,3 +459,129 @@ PATH记录了系统执行任何命令的搜索路径，例如：执行`cd`命令
 ---
 
 **`$`符号**
+
+该符号用于取环境变量的值
+
+```shell
+$ echo $PATH
+```
+
+返回结果
+
+```shell
+(base) zyc@Vmware:~$ echo $PATH
+/home/zyc/anaconda3/bin:/home/zyc/anaconda3/condabin:/home/zyc/anaconda3/bin:/home/zyc/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+```
+
+当环境变量与其他的内容混在一起时，使用
+
+```shell
+$ echo ${PATH}ABC
+```
+
+## 11.1 自行设置环境变量
+
+**临时设置**
+
+```shell
+$ export 变量名=变量值
+```
+
+**永久生效**
+
+- 针对当前用户生效，配置在当前用户的`~/.bashrc`文件中
+  - 在该文件中写`export ...`
+- 针对所有用户生效，配置在`/etc/profile`文件中
+- 并通过语法`source 配置文件`，进行立刻生效，或重新打开bash生效
+
+---
+
+**案例：编写一个脚本文件，在任何地方都能够执行该文件，且自动输出“hello”**
+
+思路：
+
+- 在任意路径下创建文件`/home/zyc/operate`，在文件中写入`echo hello`
+- 将文件设置为可执行`$ chmod 755 operate`
+  - 此时，如果不修改环境变量，则只能在该目录下执行`$ ./operate`运行该脚本文件
+- 将该文件的路径添加到`PATH`环境变量中`export PATH=${PATH}:${PWD}`
+  - 加入环境变量后，可以直接通过`$ operate`来运行该脚本
+- 执行该文件
+
+# 12.文件上传和下载
+
+`rz`命令：文件上传，直接输入`rz`命令即可
+
+`sz`命令：文件下载，输入`sz 文件名`
+
+# 13.压缩和解压
+
+常见的几种压缩格式：
+
+- `zip`：对于**Linux**，Windows和MacOS常用
+- `7z`：对于Windows常用
+- `rar`：对于Windows常用
+- `tar`：对于**Linux**和MacOS常用
+- `gz`：对于**Linux**和MacOS常用
+
+## 13.1 `tar`和`gz`两种格式
+
+- `tar`：称为`tarball`，归档文件，仅仅简单的讲文件组装到一个`.tar`文件内，并无文件体积的减少
+- `gz`：常见为`tar.gz`，使用`gzip`压缩算法（**该算法只支持压缩一个文件**）将文件压缩到一个文件内，可极大减少压缩后的体积
+
+针对这两种格式，使用`tar`命令，**均可以进行压缩和解压缩的操作**
+
+```shell
+$ tar [-c -v -x -f -z -C] 参数1 参数2 ... 参数N
+```
+
+- `-c`：创建压缩文件，用于压缩模式
+- `-v`：显示压缩、解压过程，查看进度
+- `-x`：解压模式
+- `-f`：要创建的文件，或要解压的文件，此选项**必须在所有选项中处于最后一个**
+- `-z`：`gzip`模式，不使用该选项就是普通的`tarball`模式
+- `-C`：选择解压的目的地，用于解压模式
+
+**常用组合**
+
+- `tar -cvf test.tar 1.txt 2.txt 3.txt`：将三个文件**组合**到`tar`文件里
+- `tar -zcvf test.tar.gz 1.txt 2.txt 3.txt`：将三个文件**压缩**到`.tar.gz`文件里
+
+- `tar -xvf test.tar`：将压缩包解压到当前目录
+- `tar -xvf test.tar -C /home/zyc`：解压`tar`压缩包到`/home/zyc`
+- `tar -zxvf test.tar.gz -C /home`/zyc：解压`.tar.gz`压缩包到`/home/zyc`
+
+## 13.2 `zip`格式
+
+**压缩**
+
+```bash
+$ zip [-r] 参数1 参数2 ...
+```
+
+- `-r`：被压缩的内容**包含文件夹**时，需要使用`-r`选项
+
+示例：
+
+- `zip test.zip a.txt b.txt c.txt`：将`a.txt`，`b.txt`和`c.txt`压缩到`test.zip`文件中
+- `zip test.zip test a.txt`：将文件夹`test`和文件`a.txt`压缩到`test.zip`中
+
+---
+
+**解压**
+
+```bash
+$ unzip [-d] 参数
+```
+
+- `-d`：指定要解压的目的地
+
+示例：
+
+- `unzip test.zip`：将`test.zip`解压到当前目录
+- `unzip test.zip -d /home/zyc`：将`test.zip`解压到`/home/zyc`
+
+# 14.脚本
+
+如果有一个脚本`xxx.sh`需要在当前shell中执行，需要运行`source xxx.sh`而不是`./xxx.sh`。
+
+因为如果执行后者，脚本中的命令会在**一个新的子 shell 中执行**，一旦脚本结束，你的**当前 shell 不会受到任何影响**

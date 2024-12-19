@@ -1,3 +1,11 @@
+#
+# 使用斜杠'/'来指定目录 : logs/
+# 忽略任意子目录中的 .bak 文件 : **/*.bak
+
 *.pdf
 *.ppt
 *.pptx
+*.zip
+
+FreeRTOS/FreeRTOSv202212.01/
+FreeRTOS/STM32_RTOS_Code/
