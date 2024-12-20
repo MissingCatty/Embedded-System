@@ -42,7 +42,7 @@
   - `system_stm32f10x.c`
   - `system_stm32f10x.h`：配置系统时钟
 - STM32由Cortex-M3内核及片上外设组成，所以需要添加内核寄存器描述文件。将`STM32F10x_StdPeriph_Lib_V3.6.0\Libraries\CMSIS\CM3\CoreSupport`目录里的`core.h`和`core.c`复制到`~/Start`文件夹下
-- 在Keil5的工具栏中的“Project-Mange-Project Items”，创建`Start`分组（Group），并把`~/Start`文件夹里的文件添加到工程里
+- 在Keil5的工具栏中的“Project-Mange-Project Items”，创建`Start`分组（Group），并把`~/Start`文件夹里的`.c`文件添加到工程里
   - `_md.s`
   - 所有`.c`和`.h`文件
 - 点击魔术棒，添加头文件路径
@@ -74,7 +74,7 @@
 - 在项目根目录创建文件夹，并添加组
 - 将`STM32F10x_StdPeriph_Lib_V3.6.0\Libraries\STM32F10x_StdPeriph_Driver\src`里的`.c`文件全部复制到Library文件夹中
 - 将`STM32F10x_StdPeriph_Lib_V3.6.0\Libraries\STM32F10x_StdPeriph_Driver\inc`里的`.h`文件全部复制到Library文件夹中
-- 在组里添加所有文件
+- 在组里添加所有`.c`文件
 - 添加头文件路径
 
 ---
@@ -97,3 +97,15 @@
 点击扳手图标
 
 ![image-20241219213717069](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219213717069.png)
+
+### 3.使用新版MDK，程序下载后无法直接运行
+
+两个地方：
+
+- 魔术棒-Debug-”ST-Link Debuffer“右侧的Settings-”Flash Download“-勾选”Reset and Run“
+
+  ![image-20241220133833007](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241220133833007.png)
+
+- 魔术棒-Debug-”ST-Link Debuffer“右侧的Settings-”Pack“-把Enable取消勾选
+
+  ![image-20241220133842679](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241220133842679.png)
