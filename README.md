@@ -98,7 +98,7 @@
 
 ![image-20241219213717069](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219213717069.png)
 
-# 3.使用新版MDK，程序下载后无法直接运行
+## 3.使用新版MDK，程序下载后无法直接运行
 
 两个地方：
 
