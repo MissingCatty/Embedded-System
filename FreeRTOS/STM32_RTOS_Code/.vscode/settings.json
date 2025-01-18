@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "stm32f10x.h": "c",
+        "lightsensor.h": "c",
+        "led.h": "c",
+        "timer.h": "c",
+        "stm32f10x_conf.h": "c",
+        "oled.h": "c",
+        "experiment.h": "c",
+        "experiment_selected.h": "c",
+        "cstdint": "c"
+    }
+}

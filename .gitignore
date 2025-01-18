@@ -8,5 +8,4 @@
 *.zip
 
 FreeRTOS/FreeRTOSv202212.01/
-FreeRTOS/STM32_RTOS_Code/
 FreeRTOS/《FreeRTOS源码与应用》例程源码-F103/
