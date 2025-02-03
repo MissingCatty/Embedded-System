@@ -16,6 +16,10 @@ int main(void)
 #endif
 
 #ifdef EXP_TIM_IC
-    Exp_TIM_IC();
+	Exp_TIM_IC();
+#endif
+
+#ifdef EXP_ADC_DMA
+	Exp_ADC_DMA();
 #endif
 }

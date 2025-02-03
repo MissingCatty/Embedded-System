@@ -37,3 +37,7 @@
 .\objects\experiment.o: .\System\Timer.h
 .\objects\experiment.o: .\User\Experiment_Selected.h
 .\objects\experiment.o: .\Hardware\OLED.h
+.\objects\experiment.o: .\Hardware\ADC.h
+.\objects\experiment.o: .\User\Experiment_Selected.h
+.\objects\experiment.o: .\Hardware\DMA.h
+.\objects\experiment.o: .\User\Experiment_Selected.h

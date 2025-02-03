@@ -8,6 +8,19 @@
         "oled.h": "c",
         "experiment.h": "c",
         "experiment_selected.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "dma.h": "c",
+        "cmath": "c",
+        "limits": "c",
+        "type_traits": "c",
+        "charconv": "c",
+        "optional": "c",
+        "format": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "utility": "c"
     }
 }
