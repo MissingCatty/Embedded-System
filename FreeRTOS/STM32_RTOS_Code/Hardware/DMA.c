@@ -17,7 +17,7 @@ void DMA_Config(void)
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; // 外设数据宽度，16位
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;            // 外设地址不自增
     DMA_InitStructure.DMA_MemoryBaseAddr = ADC_Res_Address;                     // 内存地址
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;     // 内存数据宽度，16位
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;         // 内存数据宽度，16位
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;                     // 内存地址自增
     DMA_InitStructure.DMA_BufferSize = 3;                                       // 传输3次
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;                                // 硬件触发
