@@ -21,6 +21,13 @@
         "array": "c",
         "functional": "c",
         "tuple": "c",
-        "utility": "c"
+        "utility": "c",
+        "usart.h": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "stdlib.h": "c",
+        "delay.h": "c",
+        "compare": "c"
     }
 }

@@ -44,6 +44,10 @@
 ".\objects\oled.o"
 ".\objects\adc.o"
 ".\objects\dma.o"
+".\objects\key.o"
+".\objects\usart.o"
+".\objects\i2c.o"
+".\objects\spi.o"
 --strict --scatter ".\Objects\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

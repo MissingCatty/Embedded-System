@@ -110,3 +110,18 @@
 
   ![image-20241220133842679](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241220133842679.png)
 
+## 4.使用Keil的示波器软件调试
+
+- 点击“扳手”，修改其中的配置
+
+  ![image-20250205230007730](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20250205230007730.png)
+
+- 进入Debug模式，并开启“逻辑分析仪”
+
+  ![image-20250205230202862](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20250205230202862.png)
+
+- 点击左上角的"Setup"按钮，设置要追踪的引脚
+  - 引脚设置语法为`GPIOx_IDR.y`，其中`x`为端口，`y`为引脚
+
+- 设置”Disaplay Type“为“Bit”
+- 随后就可以调试了

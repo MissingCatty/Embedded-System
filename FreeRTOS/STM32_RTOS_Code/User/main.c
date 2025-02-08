@@ -22,4 +22,16 @@ int main(void)
 #ifdef EXP_ADC_DMA
 	Exp_ADC_DMA();
 #endif
+
+#ifdef EXP_USART
+	Exp_USART();
+#endif
+
+#ifdef EXP_I2C
+	Exp_I2C();
+#endif
+
+#ifdef EXP_SPI
+	Exp_SPI();
+#endif // DEBUG
 }
