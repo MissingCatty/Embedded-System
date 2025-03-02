@@ -394,6 +394,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\board.c</FilePath>
             </File>
+            <File>
+              <FileName>helloworld.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\commands\helloworld.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

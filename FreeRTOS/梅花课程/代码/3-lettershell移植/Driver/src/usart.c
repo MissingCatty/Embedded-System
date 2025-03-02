@@ -64,7 +64,6 @@ void USART1_IRQHandler(void)
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
         rx_data = USART_ReceiveData(USART1);
-        // usart_send(rx_data); // 回传数据，用于调试
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
 }
