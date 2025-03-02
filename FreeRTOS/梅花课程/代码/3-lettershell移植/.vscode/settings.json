@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stm32f4xx.h": "c",
+        "usart.h": "c",
+        "main.h": "c",
+        "shell.h": "c",
+        "board.h": "c",
+        "myshell.h": "c"
+    }
+}

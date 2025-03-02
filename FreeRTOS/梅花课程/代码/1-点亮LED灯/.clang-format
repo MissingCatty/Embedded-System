@@ -151,7 +151,7 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 
 # 指针和引用的对齐: Left, Right, Middle
-PointerAlignment: Middle
+PointerAlignment: Right
 
 # 允许重新排版注释
 ReflowComments: true
