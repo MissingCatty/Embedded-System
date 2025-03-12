@@ -8,7 +8,8 @@
                 "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\4-定时器延迟\\Firmware\\CMSIS\\Device",
                 "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\4-定时器延迟\\Firmware\\Driver\\inc",
                 "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\4-定时器延迟\\APP",
-                "D:\\Keil\\Keil_v5\\ARM\\ARMCC\\include",
+                "D:\\Keil\\Keil_v5\\ARM\\ARM_Compiler_5.06u7\\include",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\4-定时器延迟\\Driver\\src",
                 "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\4-定时器延迟\\Firmware\\Driver\\src"
             ],
             "defines": [

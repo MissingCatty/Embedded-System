@@ -1,6 +1,6 @@
 Dependencies for Project 'FreeRTOS', Target 'Target_1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7
-F (.\APP\main.c)(0x67C43217)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\APP\main.c)(0x67CBE43E)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\Firmware\CMSIS\Device\stm32f4xx.h)(0x67BAFC1F)
 I (.\Firmware\CMSIS\Core\core_cm4.h)(0x67BAF304)
 I (D:\Keil\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E3CC2)
@@ -39,7 +39,7 @@ I (.\APP\inc\main.h)(0x67C40C38)
 I (.\Driver\inc\usart.h)(0x67C412FC)
 I (.\APP\inc\board.h)(0x67C3C08C)
 I (.\Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (.\Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (.\Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 I (.\Driver\inc\myshell.h)(0x67C4171B)
 F (.\APP\board.c)(0x67C3C07E)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\board.o --omf_browse .\objects\board.crf --depend .\objects\board.d)
 I (.\APP\inc\board.h)(0x67C3C08C)
@@ -80,7 +80,7 @@ I (.\Firmware\Driver\inc\stm32f4xx_fsmc.h)(0x67BAF307)
 I (.\Driver\inc\usart.h)(0x67C412FC)
 F (.\APP\commands\helloworld.c)(0x67C441CB)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\helloworld.o --omf_browse .\objects\helloworld.crf --depend .\objects\helloworld.d)
 I (.\Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (.\Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (.\Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 F (.\Driver\src\usart.c)(0x67C4370E)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\usart.o --omf_browse .\objects\usart.crf --depend .\objects\usart.d)
 I (.\Driver\inc\usart.h)(0x67C412FC)
 I (.\Firmware\CMSIS\Device\stm32f4xx.h)(0x67BAFC1F)
@@ -154,7 +154,7 @@ I (.\Firmware\Driver\inc\stm32f4xx_dac.h)(0x67BAF306)
 I (.\Firmware\Driver\inc\stm32f4xx_dcmi.h)(0x67BAF306)
 I (.\Firmware\Driver\inc\stm32f4xx_fsmc.h)(0x67BAF307)
 I (.\Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (.\Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (.\Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 I (.\Driver\inc\usart.h)(0x67C412FC)
 F (.\Firmware\CMSIS\Device\startup_stm32f40xx.s)(0x67BAF2CB)(--cpu Cortex-M4.fp.sp -g --apcs=interwork --pd "__MICROLIB SETA 1"--pd "__UVISION_VERSION SETA 541" --pd "STM32F407xx SETA 1"--list .\listings\startup_stm32f40xx.lst --xref -o .\objects\startup_stm32f40xx.o --depend .\objects\startup_stm32f40xx.d)
 F (.\Firmware\CMSIS\Device\stm32f4xx_it.c)(0x67BB0172)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\stm32f4xx_it.o --omf_browse .\objects\stm32f4xx_it.crf --depend .\objects\stm32f4xx_it.d)
@@ -198,7 +198,7 @@ I (.\APP\inc\main.h)(0x67C40C38)
 I (.\Driver\inc\usart.h)(0x67C412FC)
 I (.\APP\inc\board.h)(0x67C3C08C)
 I (.\Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (.\Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (.\Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 I (.\Driver\inc\myshell.h)(0x67C4171B)
 F (.\Firmware\CMSIS\Device\system_stm32f4xx.c)(0x67BAF32E)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\system_stm32f4xx.o --omf_browse .\objects\system_stm32f4xx.crf --depend .\objects\system_stm32f4xx.d)
 I (Firmware\CMSIS\Device\stm32f4xx.h)(0x67BAFC1F)
@@ -1718,17 +1718,17 @@ I (.\Firmware\Driver\inc\stm32f4xx_dac.h)(0x67BAF306)
 I (.\Firmware\Driver\inc\stm32f4xx_dcmi.h)(0x67BAF306)
 I (.\Firmware\Driver\inc\stm32f4xx_fsmc.h)(0x67BAF307)
 F (.\Firmware\CMSIS\Device\stm32f4xx_conf.h)(0x67BAF32E)()
-F (.\Lib\Letter-Shell\shell.c)(0x67C2F1CB)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\shell.o --omf_browse .\objects\shell.crf --depend .\objects\shell.d)
+F (.\Lib\Letter-Shell\shell.c)(0x67CBE15D)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\shell.o --omf_browse .\objects\shell.crf --depend .\objects\shell.d)
 I (Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 I (D:\Keil\Keil_v5\ARM\ARM_Compiler_5.06u7\include\string.h)(0x5E8E3CC2)
 I (D:\Keil\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdio.h)(0x5E8E3CC2)
 I (D:\Keil\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdarg.h)(0x5E8E3CC2)
 I (Lib\Letter-Shell\shell_ext.h)(0x67C2F1CB)
 F (.\Lib\Letter-Shell\shell_cmd_list.c)(0x67C436A5)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\shell_cmd_list.o --omf_browse .\objects\shell_cmd_list.crf --depend .\objects\shell_cmd_list.d)
 I (Lib\Letter-Shell\shell.h)(0x67C2F1CB)
-I (Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 F (.\Lib\Letter-Shell\shell_ext.c)(0x67C2F1CB)(--c99 --gnu -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .\Driver\inc -I .\Firmware\CMSIS\Core -I .\Firmware\CMSIS\Device -I .\Firmware\Driver\inc -I .\APP\inc -I .\Lib\Letter-Shell-D__UVISION_VERSION="541" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER -DHSE_VALUE="8000000"-o .\objects\shell_ext.o --omf_browse .\objects\shell_ext.crf --depend .\objects\shell_ext.d)
-I (Lib\Letter-Shell\shell_cfg.h)(0x67C438AD)
+I (Lib\Letter-Shell\shell_cfg.h)(0x67CBE3A8)
 I (Lib\Letter-Shell\shell.h)(0x67C2F1CB)
 I (Lib\Letter-Shell\shell_ext.h)(0x67C2F1CB)

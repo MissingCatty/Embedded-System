@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "stm32f4xx.h": "c",
+        "usart.h": "c",
+        "main.h": "c",
+        "shell.h": "c",
+        "board.h": "c",
+        "myshell.h": "c",
+        "ringbuffer8.h": "c",
+        "buffer.h": "c",
+        "tlsf.h": "c",
+        "limits.h": "c",
+        "assert.h": "c",
+        "myringbuffer.h": "c",
+        "stdlib.h": "c",
+        "mytlsf.h": "c",
+        "stddef.h": "c",
+        "random": "c"
+    }
+}

@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,HSE_VALUE=8000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Driver\inc;.\Firmware\CMSIS\Core;.\Firmware\CMSIS\Device;.\Firmware\Driver\inc;.\APP;.\Driver\inc</IncludePath>
+              <IncludePath>.\Driver\inc;.\Firmware\CMSIS\Core;.\Firmware\CMSIS\Device;.\Firmware\Driver\inc;.\APP</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -389,10 +389,27 @@
               <FileType>1</FileType>
               <FilePath>.\APP\main.c</FilePath>
             </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\board.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Driver</GroupName>
+          <Files>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\delay.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Firmware</GroupName>

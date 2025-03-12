@@ -3,14 +3,14 @@
         {
             "name": "Target_1",
             "includePath": [
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Driver\\inc",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Firmware\\CMSIS\\Core",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Firmware\\CMSIS\\Device",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Firmware\\Driver\\inc",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\APP",
-                "D:\\Keil\\Keil_v5\\ARM\\ARMCC\\include",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Driver\\src",
-                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口实验\\Firmware\\Driver\\src"
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Driver\\inc",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Firmware\\CMSIS\\Core",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Firmware\\CMSIS\\Device",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Firmware\\Driver\\inc",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\APP",
+                "D:\\Keil\\Keil_v5\\ARM\\ARM_Compiler_5.06u7\\include",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Driver\\src",
+                "c:\\Users\\13566\\Desktop\\EmbeddingSystemNoob\\FreeRTOS\\梅花课程\\代码\\2-串口基础实验\\Firmware\\Driver\\src"
             ],
             "defines": [
                 "STM32F40_41xxx",

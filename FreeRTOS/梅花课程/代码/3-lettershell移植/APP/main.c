@@ -4,7 +4,7 @@
 int main(void)
 {
     board_init();
-    usart_init(115200);
+    usart_init(9600);
     myshell_init();
 		
     while (1)
