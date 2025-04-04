@@ -1,0 +1,48 @@
+# Keil MDK-ARM 项目文件
+*.uvgui.*
+*.uvopt
+*.uvproj
+*.uvmpw
+*.uvguix.*
+
+# 编译输出文件
+*.o
+*.axf
+*.hex
+*.bin
+*.elf
+*.map
+*.lst
+*.d
+*.crf
+*.lnp
+*.htm
+*.dep
+*.iex
+*.tra
+*.cdb
+*.bak
+
+# 中间文件和目录
+Objects/
+Listings/
+*.build_log.htm
+
+# Keil 临时文件
+*.sct
+*.sfr
+*.sct
+*.log
+
+# 调试相关文件
+*.ini
+*.jlink
+*.py
+
+# 本地IDE配置文件
+.vscode/
+.idea/
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db

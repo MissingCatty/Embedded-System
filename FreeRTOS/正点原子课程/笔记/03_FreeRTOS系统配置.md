@@ -1,6 +1,6 @@
 在实际使用 FreeRTOS 的时候我们时常需要根据自己需求来配置 FreeRTOS，而且不同架构的 MCU 在使用的时候配置也不同。FreeRTOS 的系统配置文件为 `FreeRTOSConfig.h`，在此配置文件中可以完成 FreeRTOS 的裁剪和配置，这是非常重要的一个文件。
 
-系统配置通过 **在`FreeRTOSConfig.h`中使用`#define`宏定义实现** 。在官方的例程中，每个工程都有一个该文件。
+系统配置通过 **在`FreeRTOSConfig.h`和`FreeRTOS.h`中使用`#define`宏定义实现** 。在官方的例程中，每个工程都有一个该文件。
 
 # 1  ”INCLUDE_“开始的宏
 

@@ -1,9 +1,9 @@
 #include "dht11.h"
 #include "delay.h"
 
-#define DHT11_PORT           GPIOB
-#define DHT11_PIN            GPIO_Pin_1
-#define DHT11_RCC            RCC_AHB1Periph_GPIOB
+#define DHT11_PORT           GPIOA
+#define DHT11_PIN            GPIO_Pin_6
+#define DHT11_RCC            RCC_AHB1Periph_GPIOA
 #define DHT11_TIMEOUT        100
 #define MASTER_WRITE(status) GPIO_WriteBit(DHT11_PORT, DHT11_PIN, (BitAction)status)
 #define MASTER_READ()        GPIO_ReadInputDataBit(DHT11_PORT, DHT11_PIN)
@@ -75,7 +75,7 @@ uint8_t _dht11_check_response(void)
         if (!timeout)
             return 0;
     }
-	return 1;
+    return 1;
 }
 
 uint8_t dht11_receive_data(void)
