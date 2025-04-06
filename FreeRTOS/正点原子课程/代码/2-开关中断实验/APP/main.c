@@ -1,5 +1,6 @@
 #include "stm32f4xx.h"
 #include "main.h"
+#include <stdio.h>
 #include <string.h>
 
 #define START_TASK_PRIO 1                    // 任务优先级
