@@ -3,6 +3,8 @@
 
 #include "stm32f4xx.h"
 
+#define KEY_INTERRUPT_ENABLE 0 // 是否使能按键中断
+
 typedef struct
 {
     uint32_t      key_rcc_colck;

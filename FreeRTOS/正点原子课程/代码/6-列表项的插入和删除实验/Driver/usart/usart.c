@@ -1,4 +1,5 @@
 #include "usart.h"
+#include <stdio.h>
 
 volatile uint8_t rx_data = 0;
 
@@ -82,3 +83,11 @@ void USART1_IRQHandler(void)
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
 }
+
+int fputc(int ch, FILE *f)
+{
+    USART_SendData(USART1, (uint8_t) ch);
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    return ch;
+}
+
