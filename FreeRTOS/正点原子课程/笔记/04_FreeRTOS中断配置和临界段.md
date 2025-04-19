@@ -222,6 +222,20 @@ BASEPRI 寄存器说的那个阈值优先级，这个大家可以自由设置，
 
 ![image-20241221200816066](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241221200816066.png)
 
+---
+
+**什么叫RTOS可管理的中断？**
+
+- 指的是：**中断优先级足够低，RTOS 内核可以“感知”和“响应”的中断**。
+
+RTOS 可“管理”某个中断，意思是：
+
+- **可以在该中断服务函数中安全地调用 RTOS 的 API**（如 `xQueueSendFromISR()`、`xSemaphoreGiveFromISR()` 等）；
+- **RTOS 会正确调度任务、进行上下文切换、恢复挂起任务等**；
+- **不会破坏调度器的运行状态**。
+
+---
+
 # 3 FreeRTOS开关中断
 
 开关中断包含两个`portmacro.h`函数`portENABLE_INTERRUPTS ()`和`portDISABLE_INTERRUPTS()`，定义如下：
