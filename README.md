@@ -15,11 +15,11 @@
 
 - 打开后点击图片中的F1的蓝色方块
 
-  ![image-20241219184037692](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219184037692.png)
+  ![image-20241219184037692](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F5e0cfc3ade42366fcbb2ad4907a8f359.png)
 
 - 选择对应的版本下载，得到一个`en.stsw-stm32054_v3-6-0.zip`压缩文件，解压后得到`STM32F10x_StdPeriph_Lib_V3.6.0`的文件夹，文件夹内容如下：
 
-  ![image-20241219184331761](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219184331761.png)
+  ![image-20241219184331761](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F14146c7c90a6dd3e58bfb3bf6e7c26ec.png)
 
   `Libraries`是固件库源码，`Project`是例程，`Utilities`是测试工具
 
@@ -27,7 +27,7 @@
 
 - 打开Keil，工具栏中`Project-New μVision Project`新建工程（选择对应芯片不做详细介绍），得到以下项目目录结构
 
-  ![image-20241219184943772](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219184943772.png)
+  ![image-20241219184943772](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F4595347112d2fbc0b89fc02f6957cd80.png)
 
   - `Listings` 文件夹存储了编译器在编译源代码时生成的中间文件，通常是一些汇编代码或其他相关的调试信息，该文件夹通常包括每个源文件的 `.lst` 文件，这些文件包含源代码和编译时生成的汇编代码。
   - `Objects` 文件夹存储的是编译过程中生成的目标文件（`.o` 文件或 `.obj` 文件）。这些文件是源代码经过编译后的二进制文件，但还没有经过链接生成最终的可执行文件。每个源文件会对应一个目标文件，例如 `main.o` 或 `stm32f4xx_hal_msp.o`。
@@ -96,32 +96,36 @@
 
 点击扳手图标
 
-![image-20241219213717069](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241219213717069.png)
+![image-20241219213717069](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F41327efb98d85e043f52919c85cc7462.png)
+
+![image-20250503202539976](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F5683f6e10688439005fe793eb2bd6080.png)
 
 ## 3.使用新版MDK，程序下载后无法直接运行
 
 两个地方：
 
-- 魔术棒-Debug-”ST-Link Debuffer“右侧的Settings-”Flash Download“-勾选”Reset and Run“
+- 魔术棒-Debug-”ST-Link Debugger“右侧的Settings-”Flash Download“-勾选”Reset and Run“
 
-  ![image-20241220133833007](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241220133833007.png)
+  ![image-20241220133833007](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F1b23f99886cc126d5dbf653284553010.png)
 
 - 魔术棒-Debug-”ST-Link Debuffer“右侧的Settings-”Pack“-把Enable取消勾选
 
-  ![image-20241220133842679](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20241220133842679.png)
+  ![image-20241220133842679](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F22e8ffe884e2ada2d369f3b3864bf907.png)
 
 ## 4.使用Keil的示波器软件调试
 
 - 点击“扳手”，修改其中的配置
 
-  ![image-20250205230007730](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20250205230007730.png)
+  ![image-20250205230007730](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2Fb23266ac2dc8df6ecde3ef047a1b41d0.png)
 
 - 进入Debug模式，并开启“逻辑分析仪”
 
-  ![image-20250205230202862](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/image-20250205230202862.png)
+  ![image-20250205230202862](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F05%2F9d1be9af7a5ac9899e64fb7bde0e97a2.png)
 
 - 点击左上角的"Setup"按钮，设置要追踪的引脚
+
   - 引脚设置语法为`GPIOx_IDR.y`，其中`x`为端口，`y`为引脚
 
 - 设置”Disaplay Type“为“Bit”
+
 - 随后就可以调试了
