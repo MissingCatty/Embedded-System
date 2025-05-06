@@ -421,33 +421,51 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
     /* 6. 设置优先级 */
     pxNewTCB->uxPriority = uxPriority;
     
-    /* 7. 如果开启了互斥信号量功能，*/
-#if (configUSE_MUTEXES == 1)           // (7) 使能互斥信号量
+    /* 7. 如果开启了互斥信号量功能 */
+#if (configUSE_MUTEXES == 1)
     {
-        pxNewTCB->uxBasePriority = uxPriority;
-        pxNewTCB->uxMutexesHeld  = 0;
+        pxNewTCB->uxBasePriority = uxPriority; // 见注释3.
+        pxNewTCB->uxMutexesHeld  = 0; // 表示该任务当前持有的互斥信号量数量
     }
 #endif
-    vListInitialiseItem(&(pxNewTCB->xStateListItem)); // (8)
+    
+    /* 8. 初始化xStateListItem，该列表项代表了当前任务在哪个状态链表中（就绪列表、阻塞列表、挂起列表） */
+    vListInitialiseItem(&(pxNewTCB->xStateListItem));
+    /* 9. 见注释4 */
+    vListInitialiseItem(&(pxNewTCB->xEventListItem));
 
-    vListInitialiseItem(&(pxNewTCB->xEventListItem)); // (9)
-
-    listSET_LIST_ITEM_OWNER(&(pxNewTCB->xStateListItem), pxNewTCB); // (10)
-
-    listSET_LIST_ITEM_VALUE(&(pxNewTCB->xEventListItem), (TickType_t)configMAX_PRIORITIES - (TickType_t)uxPriority); // (11)
-    listSET_LIST_ITEM_OWNER(&(pxNewTCB->xEventListItem), pxNewTCB);                                                  // (12)
-#if (portCRITICAL_NESTING_IN_TCB == 1)                                                                               // 使能临界区嵌套
+    /* 10.设置xStateListItem的“所有者”指针，用于在任务调度和管理过程中，通过链表项快速找到它属于哪个任务（TCB） */
+    listSET_LIST_ITEM_OWNER(&(pxNewTCB->xStateListItem), pxNewTCB);
+    /* 11.为 xEventListItem 设置一个用于排序的值，它与任务优先级有关。当多个任务等待一个信号量或队列时，FreeRTOS 会按照它们的 xItemValue（即这个设置的值）来进行链表排序 */
+    listSET_LIST_ITEM_VALUE(&(pxNewTCB->xEventListItem), (TickType_t)configMAX_PRIORITIES - (TickType_t)uxPriority);
+    /* 12.设置xEventListItem的所有者 */
+    listSET_LIST_ITEM_OWNER(&(pxNewTCB->xEventListItem), pxNewTCB);
+    
+    /* 13.对TCB可选字段初始化 */
+#if (portCRITICAL_NESTING_IN_TCB == 1) // 使能临界区嵌套
     {
+        /* 
+        	- 如果启用了该配置，每个任务都会有一个独立的临界区嵌套计数器。
+        	- 这样可以支持任务之间切换时正确保存和恢复临界区状态，用于中断屏蔽控制。
+        */
         pxNewTCB->uxCriticalNesting = (UBaseType_t)0U;
     }
 #endif
 #if (configUSE_APPLICATION_TASK_TAG == 1) // 使能任务标签功能
     {
+        /* 
+        	- 启用后，开发者可以给每个任务绑定一个“任务标签”（void* 类型）
+        	- 可以用它做一些自定义功能，比如调试、任务监视、扩展 trace 数据等。
+        */
         pxNewTCB->pxTaskTag = NULL;
     }
 #endif
 #if (configGENERATE_RUN_TIME_STATS == 1) // 使能时间统计功能
     {
+        /*
+        	- 启用后，会记录该任务累计运行的 CPU 时间（单位由你的定时器频率决定）。
+        	- 配合 vTaskGetRunTimeStats() 可以查看各任务的 CPU 使用百分比，用于性能分析和负载监测。
+        */
         pxNewTCB->ulRunTimeCounter = 0UL;
     }
 #endif
@@ -456,7 +474,7 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
         for (x = 0; x < (UBaseType_t)configNUM_THREAD_LOCAL_STORAGE_POINTERS;
              x++)
         {
-            pxNewTCB->pvThreadLocalStoragePointers[x] = NULL; // (13)
+            pxNewTCB->pvThreadLocalStoragePointers[x] = NULL; // 初始化线程本地存储指针
         }
     }
 #endif
@@ -476,10 +494,15 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
         pxNewTCB->ucDelayAborted = pdFALSE;
     }
 #endif
-    pxNewTCB->pxTopOfStack = pxPortInitialiseStack(pxTopOfStack, pxTaskCode, pvParameters); // (14)
+    
+    /* 14.初始化任务栈，并设置任务栈顶指针 pxTopOfStack，为任务切换做好准备。 */
+    pxNewTCB->pxTopOfStack = pxPortInitialiseStack(pxTopOfStack, pxTaskCode, pvParameters);
+    
+    /* 15.生成任务句柄，返回给参数 pxCreatedTask，从这里可以看出任务句柄其实就是任务
+控制块 */
     if ((void *)pxCreatedTask != NULL)
     {
-        *pxCreatedTask = (TaskHandle_t)pxNewTCB; // (15)
+        *pxCreatedTask = (TaskHandle_t)pxNewTCB;
     } else
     {
         mtCOVERAGE_TEST_MARKER();
@@ -512,4 +535,76 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
 > ##### 2.为什么要限制优先级数量？
 >
 > 因为每个优先级都需要一个优先级队列来维护，如果设置最大优先级为20，则要20个队列来管理任务，在资源首先的系统中不合适。
+>
+> ###### 3.开启互斥信号量为什么要保存初始优先级？
+>
+> 这涉及到优先级反转，何为优先级反转？
+>
+> 举个简单的例子，假设有三个任务：
+>
+> - **任务A**：低优先级，正在运行并持有一个互斥锁（mutex）。
+> - **任务B**：中等优先级，周期性运行。
+> - **任务C**：高优先级，想要获取任务A持有的互斥锁。
+>
+> **正常期望：**
+>
+> 任务C应该抢占其他任务，迅速运行。
+>
+> **实际发生：**
+>
+> 1. 任务A持有mutex，还没释放；
+> 2. 任务C尝试获取mutex，但被阻塞（等待任务A释放）；
+> 3. 中优先级的任务B继续运行，占用CPU；
+> 4. 任务A迟迟无法得到CPU执行机会，自然无法释放mutex；
+> 5. 所以高优先级任务C一直卡住，被“反转”成“优先级最低的”。
+>
+> 这种就是优先级反转：低优先级任务间接“压制”了高优先级任务的执行。
+>
+> 为了解决“优先级反转”，FreeRTOS采用“**优先级继承**”的方法：当某个低优先级的任务A持有互斥锁时，当高优先级的任务C等待其互斥锁时，会临时提高A的优先级至C，确保：
+>
+> - 如果有优先级比C低却比A原始优先级高的任务B在执行，A不会被B阻塞得不到执行，等待A迅速执行完毕并释放互斥锁时，C就能够得到执行。
+> - 如果有优先级比C高的任务D在执行，那么A和C都会被D阻塞，符合正常的逻辑。
+>
+> **所以，有如果使用了互斥信号量功能，就会涉及优先级继承，所以要把一个任务的原始优先级保存下来**。
+>
+> ###### 4. 事件等待列表项`xEventListItem`
+>
+> 当任务等待某个事件（如信号量、队列、事件组等）时，操作系统用 `xEventListItem` 把该任务挂到“事件等待列表”中。
+>
+> 例如，任务 A 想要从一个队列中接收数据，但队列是空的：
+>
+> 此时 FreeRTOS 会做两件事：
+>
+> 1. 把任务 A 的 `xEventListItem` 插入到 `xQueue` 的等待链表中（例如 `xTasksWaitingToReceive`）；
+> 2. 挂起任务 A（任务状态变为阻塞）；
+>
+> 一旦其他任务往队列中发送数据，FreeRTOS 会：
+>
+> - 从 `xTasksWaitingToReceive` 中找出一个任务；
+> - 根据 `xEventListItem` 找到它属于哪个任务；
+> - 把它唤醒，放入就绪队列中去运行。
+
+## 2.3 pxPortInitialiseStack函数
+
+堆栈是用来在进行上下文切换的时候保存现场的，一般在新创建好一个堆栈以后会对其先进行初始化处理。
+
+
+
+```c
+StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters)
+{
+    pxTopOfStack--;
+    *pxTopOfStack = portINITIAL_XPSR;
+    pxTopOfStack--;
+    *pxTopOfStack = ((StackType_t)pxCode) & portSTART_ADDRESS_MASK;
+    pxTopOfStack--;
+    *pxTopOfStack = (StackType_t)prvTaskExitError;
+    pxTopOfStack -= 5;
+    *pxTopOfStack = (StackType_t)pvParameters;
+    pxTopOfStack--;
+    *pxTopOfStack = portINITIAL_EXEC_RETURN;
+    pxTopOfStack -= 8;
+    return pxTopOfStack;
+}
+```
 
