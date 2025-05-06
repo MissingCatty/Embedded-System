@@ -588,7 +588,11 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
 
 堆栈是用来在进行上下文切换的时候保存现场的，一般在新创建好一个堆栈以后会对其先进行初始化处理。
 
+在初始化堆栈时，这些恢复的数据其实并没有实际意义，只是起到一个模板的作用，显示每次挂起任务时应该保存哪些寄存器的值。
 
+寄存器包括：
+
+- 寄存器 `xPSR`值为 `portINITIAL_XPSR`，其值为 `0x01000000`。`xPSR `是 `Cortex-M4` 的一个内核寄存器，叫做程序状态寄存器， 0x01000000 表示这个寄存器的 bit24 为 1， 表示处于 `Thumb `状态，即使用的 Thumb 指令。
 
 ```c
 StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters)
