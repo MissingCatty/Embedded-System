@@ -592,23 +592,30 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
 
 寄存器包括：
 
-- 寄存器 `xPSR`值为 `portINITIAL_XPSR`，其值为 `0x01000000`。`xPSR `是 `Cortex-M4` 的一个内核寄存器，叫做程序状态寄存器， 0x01000000 表示这个寄存器的 bit24 为 1， 表示处于 `Thumb `状态，即使用的 Thumb 指令。
+- `(1)`：寄存器 `xPSR`值为 `portINITIAL_XPSR`，其值为 `0x01000000`。`xPSR `是 `Cortex-M4` 的一个内核寄存器，叫做程序状态寄存器， 0x01000000 表示这个寄存器的 bit24 为 1， 表示处于 `Thumb`状态，即使用的 Thumb 指令（**Thumb 指令集**是 ARM 处理器架构提供的一种**压缩指令格式**，主要目标是**减小代码体积**，提高在嵌入式系统中的效率）。
+- `(2)`：寄存器 PC 设置为程序计数器 PC 的初始值，`pxCode` 是任务函数的地址，实际上，它的目的是告诉 CPU：**任务从哪个地址开始执行。**
+- `(3)`：寄存器 LR 设置为**任务函数返回地址**，如果任务函数运行完了（没有 return 值），就会跳到 `prvTaskExitError`。
+- `(4)`：跳过 4 个寄存器， R12， R3， R2， R1，这四个寄存器不初始化
+- `(5)`：设置 **R0 的初始值**，即任务函数的参数，一般情况下，函数调用会将 R0~R3 作为输入参数， R0 也可用作返回结果，如果返回值为 64 位，则 R1 也会用于返回结果  
+- `(6)`：保存 `EXC_RETURN`值， 用于退出 SVC 或 PendSV 中断的时候处理器应该处于什么壮态。  
+- `(7)`：跳过 8 个寄存器， R11、 R10、 R8、 R7、 R6、 R5、 R4
 
 ```c
 StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters)
 {
     pxTopOfStack--;
-    *pxTopOfStack = portINITIAL_XPSR;
+    *pxTopOfStack = portINITIAL_XPSR; // (1)
     pxTopOfStack--;
-    *pxTopOfStack = ((StackType_t)pxCode) & portSTART_ADDRESS_MASK;
+    *pxTopOfStack = ((StackType_t)pxCode) & portSTART_ADDRESS_MASK; // (2)
     pxTopOfStack--;
-    *pxTopOfStack = (StackType_t)prvTaskExitError;
-    pxTopOfStack -= 5;
-    *pxTopOfStack = (StackType_t)pvParameters;
+    *pxTopOfStack = (StackType_t)prvTaskExitError; // (3)
+    pxTopOfStack -= 5; // (4)
+    *pxTopOfStack = (StackType_t)pvParameters; // (5)
     pxTopOfStack--;
-    *pxTopOfStack = portINITIAL_EXEC_RETURN;
+    *pxTopOfStack = portINITIAL_EXEC_RETURN; // (6)
     pxTopOfStack -= 8;
     return pxTopOfStack;
 }
 ```
 
+![image-20250507115530414](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/11-57-22-4c3dca3822e0d2688b230e659f576c19-image-20250507115530414-4793b6.png)
