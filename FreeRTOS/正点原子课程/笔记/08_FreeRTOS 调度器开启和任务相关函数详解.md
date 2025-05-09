@@ -622,7 +622,7 @@ StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxC
 
 ## 2.4 添加任务到就绪队列
 
-任务创建完成以后就会被添加到就绪列表中， FreeRTOS 使用不同的列表表示任务的不同状态，在文件 tasks.c 中就定义了多个列表来完成不同的功能，这些列表如下：
+任务创建完成以后就会被添加到就绪列表中， FreeRTOS 使用不同的列表表示任务的不同状态，在文件 `tasks.c` 中就定义了多个列表来完成不同的功能，这些列表如下：
 
 ```c
 PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];
@@ -633,4 +633,42 @@ PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;
 PRIVILEGED_DATA static List_t xPendingReadyList;
 ```
 
-- `pxReadyTasksLists`：就绪列表
+- `pxReadyTasksLists`：就绪队列列表，长度为`configMAX_PRIORITIES`（最大优先级），每个元素是一个`List_t`（链表），所以说每个优先级都是一个优先级队列
+
+- `xDelayedTaskList1`，`xDelayedTaskList2`：延迟任务链表，当任务调用 `vTaskDelay()` 等函数时，会被放入延迟队列，等待时间到达后再恢复到就绪状态
+
+  > ###### 为什么要设置两个链表？
+  >
+  > 放入延时队列的函数需要等待被唤醒，当某个任务被放入延时队列时，就会被计算好唤醒的时间。在FreeRTOS中，所有的时间都是被一个tick计数器来表示的。任务待唤醒时间为`task_wake_time`，当前tick为`current_tick_count`。
+  >
+  > 系统每计一个tick，都会检查每个任务：
+  >
+  > ```c
+  > if (task_wake_time <= current_tick_count)
+  > {
+  >     // 时间到了，把任务从延时队列移除
+  >     // 放入就绪队列中等待执行
+  > }
+  > ```
+  >
+  > 然而，tick是一个32位无符号整数，假设当前的`current_tick_count`为`0xFFFFFFFF`，现在来了一个延时8个tick的任务到延时队列，则它的`task_wake_time`为`0x00000008`，产生溢出，此时如果直接判断`if (task_wake_time <= current_tick_count)`，就为True，就从延时队列移除，显然不对，所以就把`task_wake_time`溢出的任务放到`pxOverflowDelayedTaskList`里，没溢出的放到`pxDelayedTaskList`里。
+  >
+  > 当`current_tick_count`产生溢出时，`pxDelayedTaskList`和`pxOverflowDelayedTaskList`会交换，因为当前tick溢出变为`0x00000000`时，原本溢出的变正常了。**FreeRTOS移除延时任务的链表仅为`pxDelayedTaskList`，`pxOverflowDelayedTaskList`需要等待tick溢出。**
+
+- `pxDelayedTaskList`，`pxOverflowDelayedTaskList`：链表指针，指向 **延迟任务列表**和**溢出任务列表**
+
+  > 初始时
+  >
+  > ```c
+  > pxDelayedTaskList = &xDelayedTaskList1;
+  > pxOverflowDelayedTaskList = &xDelayedTaskList2;
+  > ```
+  >
+  > `current_tick_count`溢出时，交换，这样设置的好处是不需要判断指针指向的是哪个链表。
+  >
+  > ```c
+  > List_t *temp = pxDelayedTaskList;
+  > pxDelayedTaskList = pxOverflowDelayedTaskList;
+  > pxOverflowDelayedTaskList = temp;
+  > ```
+
