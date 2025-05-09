@@ -619,3 +619,18 @@ StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxC
 ```
 
 ![image-20250507115530414](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/11-57-22-4c3dca3822e0d2688b230e659f576c19-image-20250507115530414-4793b6.png)
+
+## 2.4 添加任务到就绪队列
+
+任务创建完成以后就会被添加到就绪列表中， FreeRTOS 使用不同的列表表示任务的不同状态，在文件 tasks.c 中就定义了多个列表来完成不同的功能，这些列表如下：
+
+```c
+PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];
+PRIVILEGED_DATA static List_t xDelayedTaskList1;
+PRIVILEGED_DATA static List_t xDelayedTaskList2;
+PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;
+PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;
+PRIVILEGED_DATA static List_t xPendingReadyList;
+```
+
+- `pxReadyTasksLists`：就绪列表
