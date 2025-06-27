@@ -192,3 +192,60 @@ TaskHandle_t xTaskCreateStatic( TaskFunction_t pxTaskCode,
 任务堆栈中存储的数据类型为 `StackType_t`， `StackType_t` 本质上是 `uint32_t`，在 `portmacro.h` 中有定义。
 
 即：`StackType_t `类型的变量为 **4 个字节**，那么任务的实际堆栈大小就应该是我们所定义的 4 倍。  
+
+# 8 任务队列
+
+FreeRTOS 将所有任务根据其**当前状态**放入以下几种队列（链表）中：
+
+| 状态              | 说明               | 对应链表变量（源码中）                              |
+| ----------------- | ------------------ | --------------------------------------------------- |
+| Ready（就绪）     | 可以立即执行       | `pxReadyTasksLists[ configMAX_PRIORITIES ]`（数组） |
+| Blocked（阻塞）   | 等待某个事件或超时 | `xDelayedTaskList1`, `xDelayedTaskList2`            |
+| Suspended（挂起） | 被显式挂起         | `xSuspendedTaskList`                                |
+| Deleted（已删除） | 已标记为删除       | `xTasksWaitingTermination`（可选）                  |
+
+处于 **Ready** 状态的任务进一步根据优先级被组织到一个数组中：
+
+```c
+List_t pxReadyTasksLists[ configMAX_PRIORITIES ];
+```
+
+```css
+                   所有任务
+                       │
+           ┌───────────┼────────────┐
+           │           │            │
+         Ready       Blocked     Suspended
+           │                         
+   pxReadyTasksLists[0]    ← 优先级 0 的任务
+   pxReadyTasksLists[1]    ← 优先级 1 的任务
+   ...
+   pxReadyTasksLists[N]    ← 优先级 N 的任务
+```
+
+调度器从优先级高到低扫描 `pxReadyTasksLists`，找到第一个非空链表，从中选出任务运行。
+
+# 9 事件队列
+
+事件列表就是一个链表，其中保存着因为等待某个事件（如信号量、队列、互斥量、通知、延时等）而**被阻塞的任务**。
+
+当任务调用如下函数时，它就会进入 `Blocked` 状态，并被加入对应的“事件列表”：
+
+| 函数/操作               | 加入事件列表的原因   |
+| ----------------------- | -------------------- |
+| `xQueueReceive()`       | 等待队列中有数据     |
+| `xSemaphoreTake()`      | 等待信号量被释放     |
+| `vTaskDelay()`          | 等待时间到达         |
+| `ulTaskNotifyTake()`    | 等待任务通知         |
+| `xEventGroupWaitBits()` | 等待事件组的位被设置 |
+
+每个事件都对应有一个队列，`xEventListItem` 可能出现的列表包括：
+
+| 列表类型                                        | 使用场景                                                     | 所属模块          |
+| ----------------------------------------------- | ------------------------------------------------------------ | ----------------- |
+| `xTasksWaitingToReceive`                        | 队列为空时，任务调用 `xQueueReceive()` 挂进来等待数据        | 队列              |
+| `xTasksWaitingToSend`                           | 队列满时，任务调用 `xQueueSend()` 挂进来等待空位             | 队列              |
+| `xSemaphore.xWaitingTasks`                      | 信号量不可用时，调用 `xSemaphoreTake()` 挂进来等待释放       | 信号量            |
+| `xEventGroup.xTasksWaitingForBits`              | 任务在等待事件组的某些位被设置                               | 事件组            |
+| `xDelayedTaskList` / `xOverflowDelayedTaskList` | `vTaskDelay()` / `vTaskDelayUntil()` 挂入延迟唤醒队列（不过这里通常用 `xStateListItem`，非 `xEventListItem`） | 任务延时          |
+| 任意自定义 `List_t`                             | 如果你手动调用 `vListInsert()` 把任务的 `xEventListItem` 插入你自己创建的列表 | 用户扩展/底层模块 |

@@ -498,8 +498,7 @@ static void prvInitialiseNewTask(TaskFunction_t pxTaskCode, const char *const pc
     /* 14.初始化任务栈，并设置任务栈顶指针 pxTopOfStack，为任务切换做好准备。 */
     pxNewTCB->pxTopOfStack = pxPortInitialiseStack(pxTopOfStack, pxTaskCode, pvParameters);
     
-    /* 15.生成任务句柄，返回给参数 pxCreatedTask，从这里可以看出任务句柄其实就是任务
-控制块 */
+    /* 15.生成任务句柄，返回给参数 pxCreatedTask，从这里可以看出任务句柄其实就是指向任务控制块的指针 */
     if ((void *)pxCreatedTask != NULL)
     {
         *pxCreatedTask = (TaskHandle_t)pxNewTCB;
@@ -622,15 +621,31 @@ StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxC
 
 ## 2.4 添加任务到就绪队列
 
+### 2.4.1 任务管理有关列表
+
 任务创建完成以后就会被添加到就绪列表中， FreeRTOS 使用不同的列表表示任务的不同状态，在文件 `tasks.c` 中就定义了多个列表来完成不同的功能，这些列表如下：
 
 ```c
+/* 就绪队列 */
 PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];
+/* 延时队列 */
 PRIVILEGED_DATA static List_t xDelayedTaskList1;
 PRIVILEGED_DATA static List_t xDelayedTaskList2;
 PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;
 PRIVILEGED_DATA static List_t * volatile pxOverflowDelayedTaskList;
+/* 待就绪任务队列 */
 PRIVILEGED_DATA static List_t xPendingReadyList;
+
+#if ( INCLUDE_vTaskDelete == 1 )
+/* 待就绪任务列队列 */
+    PRIVILEGED_DATA static List_t xTasksWaitingTermination;
+/* 待就绪任务列队列 */
+    PRIVILEGED_DATA static volatile UBaseType_t uxDeletedTasksWaitingCleanUp = ( UBaseType_t ) 0U;
+#endif
+
+#if ( INCLUDE_vTaskSuspend == 1 )
+    PRIVILEGED_DATA static List_t xSuspendedTaskList;
+#endif
 ```
 
 - `pxReadyTasksLists`：就绪队列列表，长度为`configMAX_PRIORITIES`（最大优先级），每个元素是一个`List_t`（链表），所以说每个优先级都是一个优先级队列
@@ -671,4 +686,367 @@ PRIVILEGED_DATA static List_t xPendingReadyList;
   > pxDelayedTaskList = pxOverflowDelayedTaskList;
   > pxOverflowDelayedTaskList = temp;
   > ```
+
+### 2.4.2 添加新创建的任务到就绪列表
+
+主要需要做两件事：
+
+- 修改系统中的任务总数
+- 判断系统中是否有正在执行的任务：
+  - 如果没有，则新任务直接准备执行
+  - 如果有，检查调度器是否开启，如果没开启就手动切换任务
+- 为新的任务控制块分配编号
+- 添加新的任务至任务列表
+- 如果任务调度器已开启，
+
+```c
+static void prvAddNewTaskToReadyList(TCB_t *pxNewTCB)
+{
+    /*================== 进入临界区 ==================*/
+    taskENTER_CRITICAL();
+    {
+        /* 1. 系统中任务总数加一 */
+        uxCurrentNumberOfTasks++;
+        
+        /* 2. 当前没有任务在运行 */
+        if (pxCurrentTCB == NULL)
+        {
+            /* 3. 把新创建的TCB给当前正在执行的TCB */
+            pxCurrentTCB = pxNewTCB;
+            
+            /* 4. 当前任务总数为1（本来系统中没有任务） */
+            if (uxCurrentNumberOfTasks == (UBaseType_t)1)
+            {
+                /* 5. 初始化任务列表 */
+                prvInitialiseTaskLists();
+            } else
+            {
+                mtCOVERAGE_TEST_MARKER();
+            }
+        } else
+        {
+            /* 6. 如果调度器没有运行，需要手动处理任务切换 */
+            /* 调度器正在运行时，任务可以动态切换；未运行，任务仅仅被添加到列表但不立即调度 */
+            if (xSchedulerRunning == pdFALSE)
+            {
+            	/* 7. 如果新加入的任务比当前正在执行的任务优先级高 */
+                if (pxCurrentTCB->uxPriority <= pxNewTCB->uxPriority)
+                {
+            		/* 8. 新任务立即切换为当前任务 */
+                    pxCurrentTCB = pxNewTCB;
+                } else
+                {
+                    mtCOVERAGE_TEST_MARKER();
+                }
+            } else
+            {
+                mtCOVERAGE_TEST_MARKER();
+            }
+        }
+        
+        /* 9. 为任务控制块分配唯一编号 */
+        uxTaskNumber++;
+        
+/* 10. 如果启用了FreeRTOS的追踪功能 */
+#if (configUSE_TRACE_FACILITY == 1)
+        {
+            /* 11. 将全局任务编号赋值给新添加的任务 */
+            pxNewTCB->uxTCBNumber = uxTaskNumber;
+        }
+#endif
+        /* 12. 向就绪列表中添加新的TCB */
+        prvAddTaskToReadyList(pxNewTCB);
+    }
+    taskEXIT_CRITICAL();
+    /*================== 退出临界区 ==================*/
+    
+    /* 13. 如果调度器已启动 */
+    if (xSchedulerRunning != pdFALSE)
+    {
+        /* 14. 新任务优先级比正在运行的任务优先级高 */
+        if (pxCurrentTCB->uxPriority < pxNewTCB->uxPriority)
+        {
+            /* 15. 如果启用了抢占式任务调度，则当前任务立即让出，新任务执行 */
+            taskYIELD_IF_USING_PREEMPTION();
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+    } else
+    {
+        mtCOVERAGE_TEST_MARKER();
+    }
+}
+```
+
+> `prvAddTaskToReadyList`是一个宏，
+>
+> ```c
+> /*
+>     1. 用于在任务状态变为就绪（Ready）时记录调试或跟踪信息
+>     2. 记录任务的优先级到全局优先级跟踪变量，确保调度器知道当前有哪些优先级的任务处于就绪状态。
+>     3. 在对应的优先级队列中，插入一个列表项
+>     4. 在任务成功添加到就绪列表后记录调试或跟踪信息
+> */
+> #define prvAddTaskToReadyList(pxTCB)                                                       \
+>     traceMOVED_TASK_TO_READY_STATE(pxTCB);                                                 \
+>     taskRECORD_READY_PRIORITY((pxTCB)->uxPriority);                                        \
+>     vListInsertEnd(&(pxReadyTasksLists[(pxTCB)->uxPriority]), &((pxTCB)->xStateListItem)); \
+>     tracePOST_MOVED_TASK_TO_READY_STATE(pxTCB)
+> ```
+
+# 3.任务删除过程分析
+
+主要干了如下的事情：
+
+- 从就绪列表、事件列表中移除任务
+- 处理任务删除后的清理工作
+- 在必要时触发任务切换
+
+```c
+void vTaskDelete(TaskHandle_t xTaskToDelete)
+{
+    TCB_t *pxTCB;
+    taskENTER_CRITICAL();
+    {
+        /* 1. 从任务句柄（TCB指针）中获取该任务的TCB */
+        pxTCB = prvGetTCBFromHandle(xTaskToDelete);
+        
+        /* 2. 把TCB对应的列表项从列表中移除，并且判断删除之后列表中列表项个数是否为0 */
+        // （uxListRemove函数会自动获取pxTCB->xStateListItem属于哪个列表）
+        if (uxListRemove(&(pxTCB->xStateListItem)) == (UBaseType_t)0)
+        {
+            /* 3. 清除 uxReadyPriorities 中的对应位，告诉调度器“这个优先级已经没有就绪任务了” */
+            // （uxReadyPriorities是一个位图，每一位标志着当前优先级是否有就绪任务）
+            taskRESET_READY_PRIORITY(pxTCB->uxPriority);
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+        
+        /* 4.如果任务pxTCB当前还挂在某个事件列表上（比如信号量、队列、事件组的等待列表），就把它从列表里移除 */
+        // FreeRTOS 中很多内核对象（例如信号量、队列、事件组）都维护一个等待链表，叫做事件列表（Event List）。
+        // 这个列表存放的是当前正在等待这个对象的任务。
+        if (listLIST_ITEM_CONTAINER(&(pxTCB->xEventListItem)) != NULL)
+        {
+            (void)uxListRemove(&(pxTCB->xEventListItem));
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+        
+        /* 5. 任务编号加一，每次创建/删除任务都会自增一次，用于跟踪系统中任务变化历史 */
+        uxTaskNumber++;
+        
+        /* 6. 如果当前执行的任务就是要删除的任务 */
+        if (pxTCB == pxCurrentTCB)
+        {
+            // 将其加入等待终止队列
+            vListInsertEnd(&xTasksWaitingTermination, &(pxTCB->xStateListItem));
+            // 有一个任务等着清理资源
+            ++uxDeletedTasksWaitingCleanUp;
+            // 提供一个平台相关的删除钩子回调（可自定义）
+            portPRE_TASK_DELETE_HOOK(pxTCB, &xYieldPending);
+        } else
+        /* 7. 如果不是正在执行的任务，就直接删除 */
+        {
+            // 当前任务数减一
+            --uxCurrentNumberOfTasks;
+            // 删除TCB
+            prvDeleteTCB(pxTCB);
+            // 重置下一个 unblock 时间（如果这个任务曾在延时列表）
+            prvResetNextTaskUnblockTime();
+        }
+        // 统一记录日志用途
+        traceTASK_DELETE(pxTCB);
+    }
+    taskEXIT_CRITICAL();
+    
+    // 如果删除的是正在运行的任务那么就需要强制进行一次任务切换。
+    if (xSchedulerRunning != pdFALSE)
+    {
+        if (pxTCB == pxCurrentTCB)
+        {
+            configASSERT(uxSchedulerSuspended == 0);
+            portYIELD_WITHIN_API();
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+    }
+}
+```
+
+# 4.任务挂起过程分析
+
+主要干了如下几件事情：
+
+- 找到当前需要挂起的任务的TCB
+- 
+
+```c
+void vTaskSuspend(TaskHandle_t xTaskToSuspend)
+{
+    TCB_t *pxTCB;
+    
+    // 对任务队列的操作需要进入临界区
+    taskENTER_CRITICAL();
+    {
+        /* 1. 获取任务句柄对应的TCB */
+        pxTCB = prvGetTCBFromHandle(xTaskToSuspend);
+        
+        /* 2. 将任务从就绪或者延时列表中删除，并放入挂起列表 */
+        // uxListRemove函数会自动获取待删除列表项所属的列表，xStateListItem所属可能的列表包含：就绪列表、延时列表、挂起列表
+        // 返回值为零，说明删除后该列表中没有列表项
+        if (uxListRemove(&(pxTCB->xStateListItem)) == (UBaseType_t)0)
+        {
+            /* 3. 如果删除之后，其所处列表（就绪列表/延时列表）中元素为零，则重置该任务的优先级位图 */
+            // 即使该任务原来处于的队列不是就绪队列，也可以执行重置就绪队列的优先级重置操作，因为taskRESET_READY_PRIORITY内部会自动检查优先级队列是否为空
+            taskRESET_READY_PRIORITY(pxTCB->uxPriority);
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+        
+        /* 4. 判断是否当前TCB的xEventListItem处于一个事件等待队列中（当前任务是否在等待某个事件） */
+        // #define listLIST_ITEM_CONTAINER( pxListItem )            ( ( pxListItem )->pxContainer )
+        if (listLIST_ITEM_CONTAINER(&(pxTCB->xEventListItem)) != NULL)
+        {
+            /* 5. 如果当前任务确实在等待某个事件，则将其从事件等待列表中删除 */
+            (void)uxListRemove(&(pxTCB->xEventListItem));
+        } else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+        /* 6. 将当前TCB的xStateListItem放入挂起队列 */
+        vListInsertEnd(&xSuspendedTaskList, &(pxTCB->xStateListItem));
+    }
+    taskEXIT_CRITICAL();
+    
+    if (xSchedulerRunning != pdFALSE)
+    {
+        taskENTER_CRITICAL();
+        {
+            /* 7. 如果调度器正在运行，则重新计算一下还要多长时间执行下一个任务，也就是下一个任务的解锁时间。防止有任务的解锁时间参考了刚刚被挂起的那个任务。（即计算：当前系统中所有阻塞任务中，最先应该被唤醒的那个时间点 */
+            prvResetNextTaskUnblockTime();
+        }
+        taskEXIT_CRITICAL();
+    } else
+    {
+        mtCOVERAGE_TEST_MARKER();
+    }
+    
+    /* 8. 如果当前任务是正在运行的任务 */
+    if (pxTCB == pxCurrentTCB)
+    {
+        if (xSchedulerRunning != pdFALSE)
+        {
+            /* 9. 确保调度器没被挂起，否则不能安全切换任务 */
+            configASSERT(uxSchedulerSuspended == 0);
+            
+            /* 10. 调用 portYIELD_WITHIN_API()，触发任务切换 */
+            portYIELD_WITHIN_API();
+        } else
+		// 如果任务调度器没在运行，则需要手动执行任务切换
+        {
+            if (listCURRENT_LIST_LENGTH(&xSuspendedTaskList) == uxCurrentNumberOfTasks)
+            {
+                /* 11. 如果所有任务都被挂起了，说明系统中已经没有可运行的任务了，此时将 pxCurrentTCB 设为 NULL */
+                pxCurrentTCB = NULL;
+            } else
+            {
+                /* 12. 进行一次手动上下文切换，让别的任务成为当前任务 */
+                vTaskSwitchContext();
+            }
+        }
+    } else
+    {
+        mtCOVERAGE_TEST_MARKER();
+    }
+}
+```
+
+# 5.任务恢复过程
+
+任务恢复函数有两个 `vTaskResume()`和 `xTaskResumeFromISR()`，一个是用在任务中的，一个是用在中断中的，但是基本的处理过程都是一样的，我们就以函数 `vTaskResume()`为例来讲解一下任务恢复详细过程。  
+
+```c
+void vTaskResume(TaskHandle_t xTaskToResume)
+{
+    /* 1. 强制转为TCB指针（虽然TaskHandle_t本质也是指向TCB的指针） */
+    TCB_t *const pxTCB = (TCB_t *)xTaskToResume;
+    
+    /* 2. 确保待恢复任务句柄不为空 */
+    configASSERT(xTaskToResume);
+
+    /* 3. 如果待恢复任务存在且当前正在执行的任务不是待恢复任务 */
+    if ((pxTCB != NULL) && (pxTCB != pxCurrentTCB))
+    {
+        taskENTER_CRITICAL();
+        {
+            /* 4. 判断任务是否处于挂起状态 */
+            if (prvTaskIsTaskSuspended(pxTCB) != pdFALSE)
+            {
+                traceTASK_RESUME(pxTCB);
+                
+                /* 5. 将当前任务从其所属的队列删除 */
+                (void)uxListRemove(&(pxTCB->xStateListItem));
+                /* 6. 将当前任务放到就绪队列中 */
+                prvAddTaskToReadyList(pxTCB);
+                /* 7. 待恢复任务的优先级比当前执行的任务优先级大 */
+                if (pxTCB->uxPriority >= pxCurrentTCB->uxPriority)
+                {
+                    /* 8. 执行任务切换 */
+                    taskYIELD_IF_USING_PREEMPTION();
+                    else
+                    {
+                        mtCOVERAGE_TEST_MARKER();
+                    }
+                } else
+                {
+                    mtCOVERAGE_TEST_MARKER();
+                }
+            }
+            taskEXIT_CRITICAL();
+        }
+        else
+        {
+            mtCOVERAGE_TEST_MARKER();
+        }
+    }
+}
+```
+
+
+
+# 0.【附】其他函数
+
+## 0.1 taskRESET_READY_PRIORITY函数
+
+**功能**：清除就绪队列中某个优先级对应的位，即将该优先级标记为“没有就绪任务”。
+
+```c
+#define taskRESET_READY_PRIORITY( uxPriority )                                                     \
+{                                                                                                  \
+	if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ ( uxPriority ) ] ) ) == ( UBaseType_t ) 0 ) \
+	{                                                                                              \
+		portRESET_READY_PRIORITY( ( uxPriority ), ( uxTopReadyPriority ) );                        \
+	}                                                                                              \
+}
+```
+
+上述函数的执行逻辑为：
+
+- 根据参数`uxPriority`所指定的优先级列表中元素是否为零
+- `uxTopReadyPriority`是一个全局变量，**记录当前所有就绪队列中优先级最高的优先级**
+
+## 0.2 portRESET_READY_PRIORITY函数
+
+**功能**：重置 就绪队列优先级位图中**指定的优先级位**为0
+
+```c
+#define portRESET_READY_PRIORITY( uxPriority, uxReadyPriorities )     ( uxReadyPriorities ) &= ~( 1UL << ( uxPriority ) )
+```
+
+> **注意**：使用硬件方法的时候 uxTopReadyPriority 就不代表处于就绪态的最高优先级了，而是使用每个 bit 代表一个优先级， bit0 代表优先级 0， bit31 就代表优先级 31，当某个优先级有就绪任务的话就将其对应的 bit 置 1。  
 

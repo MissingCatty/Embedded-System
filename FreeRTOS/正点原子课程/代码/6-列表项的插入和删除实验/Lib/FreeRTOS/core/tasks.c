@@ -4183,7 +4183,7 @@ static void prvResetNextTaskUnblockTime( void )
                      * the holding task from the ready list. */
                     if( uxListRemove( &( pxTCB->xStateListItem ) ) == ( UBaseType_t ) 0 )
                     {
-                        portRESET_READY_PRIORITY( pxTCB->uxPriority, uxTopReadyPriority );
+                        ( pxTCB->uxPriority, uxTopReadyPriority );
                     }
                     else
                     {
