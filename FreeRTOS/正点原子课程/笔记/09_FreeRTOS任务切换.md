@@ -1,5 +1,7 @@
 # 1 任务切换概述
 
+RTOS 系统的核心是任务管理，而任务管理的核心是任务切换，**任务切换决定了任务的执行顺序**，**任务切换效率的高低也决定了一款系统的性能**， 尤其是对于实时操作系统。  
+
 RTOS依赖`PendSV`来进行任务切换，`PendSV`：
 
 - Cortex-M 架构下的一个**可编程系统异常**；
@@ -62,15 +64,15 @@ void PendSV_Handler(void)
 
 ![image-20250604083752987](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F06%2Fc42112d11b63bf3a2dac82094ed39722.png)
 
-为了解决这个问题，需要将`PendSV`异常对上下文切换的请求推迟到其他IRQ处理都完成之后，也就是将`PendSV`的优先级设置为最低。
+为了解决这个问题，需要将`PendSV`异常对上下文切换的请求推迟到其他IRQ处理都完成之后，也就是**将`PendSV`的优先级设置为最低**。
 
 ![image-20250604085031642](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F06%2Fe66678931fabdaf00e6fbb19e609b3ba.png)
 
 # 2 任务切换的场合
 
-之前讲到，可能产生上下文切换（也就是任务切换）的场合有两种：
+之前讲到，**可能**产生上下文切换（也就是任务切换）的场合有两种：
 
-- 执行一个系统调用  
+- 执行一个系统调用
 - 系统滴答定时器(SysTick)中断
 
 ## 2.1 执行系统调用
@@ -135,7 +137,71 @@ void xPortSysTickHandler(void)
 }
 ```
 
-# 3 查找下一个要运行的任务
+# 3 PendSV中断服务函数
+
+PendSV 中断服务函数本应该为 PendSV_Handler()，但是 FreeRTOS 使用#define 重定义了，如下：
+
+```c
+#define xPortPendSVHandler PendSV_Handler
+```
+
+```asm
+__asm void xPortPendSVHandler(void)
+{
+    extern uxCriticalNesting;
+    extern pxCurrentTCB;
+    extern vTaskSwitchContext;
+
+    PRESERVE8
+
+    // ---- 保存当前任务上下文 ----
+    mrs     r0, psp                        ; (1) 读取进程栈指针（PSP）到 r0
+    isb                                    ;     指令同步屏障，确保前一条完成
+
+    ldr     r3, =pxCurrentTCB              ; (2) 加载 pxCurrentTCB 的地址
+    ldr     r2, [r3]                       ; (3) 获取当前任务的 TCB 地址
+
+    tst     r14, #0x10                     ; (4) 检查是否使用浮点扩展
+    it      eq                             ; (5) 如果使用，则进入下面的指令
+    vstmdbeq r0!, {s16-s31}                ; (6) 保存浮点寄存器 s16-s31 到堆栈
+
+    stmdb   r0!, {r4-r11, r14}             ; (7) 保存核心寄存器 r4-r11 和 lr 到堆栈，r0自动递减，指向栈顶
+    str     r0, [r2]                       ; (8) 更新 TCB 中保存的当前任务的堆栈指针（PSP）
+
+    // ---- 调用任务调度器切换任务 ----
+    stmdb   sp!, {r3}                      ; (9) 保存 r3（pxCurrentTCB 地址）到 MSP
+    mov     r0, #configMAX_SYSCALL_INTERRUPT_PRIORITY ; (10) 设置最大系统调用中断优先级
+    msr     basepri, r0                    ; (11) 设置中断屏蔽，设置最大调用优先级
+    dsb                                    ;     数据同步屏障
+    isb
+    bl      vTaskSwitchContext             ; (12) 调用调度函数，更新 pxCurrentTCB
+
+    mov     r0, #0                         ; (13) 清除中断屏蔽
+    msr     basepri, r0                    ; (14)
+    ldmia   sp!, {r3}                      ; (15) 恢复 r3（pxCurrentTCB 地址）
+
+    // ---- 恢复新任务上下文 ----
+    ldr     r1, [r3]                       ; (16) 获取新任务的 TCB 地址
+    ldr     r0, [r1]                       ; (17) 获取新任务的堆栈指针（PSP）
+
+    ldmia   r0!, {r4-r11, r14}             ; (18) 恢复 r4-r11 和 lr（EXC_RETURN）
+
+    tst     r14, #0x10                     ; (19) 检查是否使用浮点扩展
+    it      eq                             ; (20)
+    vldmiaeq r0!, {s16-s31}                ; (21) 如果使用了浮点，恢复 s16-s31
+
+    msr     psp, r0                        ; (22) 设置 PSP 为新任务堆栈
+    isb                                    ;     同步
+    bx      r14                            ; (23) 跳转到r14指向的地址，返回到新任务，完成切换
+}
+
+```
+
+- `(8)`：更新TCB的栈顶指针
+- `(9),(15)`：保存和恢复`pxCurrentTCB`指针的地址，由于任务调度器执行后，任务被切换，`pxCurrentTCB`的值被改变，但其所属的地址不变。调度完成后，直接访问该指针的地址，就能找到其指向的地址。
+- `(10)`：`configMAX_SYSCALL_INTERRUPT_PRIORITY`指的是**允许调用 FreeRTOS API 的最高中断优先级**，`(11)`把所有允许调用FreeRTOS API的中断都给屏蔽了，也就是**确保了在调度器执行期间任务切换的过程不会被打断**。 
+
+# 4 查找下一个要运行的任务
 
 在 PendSV 中断服务程序中有调用函数 `vTaskSwitchContext()`来获取下一个要运行的任务，也就是查找已经就绪了的优先级最高的任务：
 
