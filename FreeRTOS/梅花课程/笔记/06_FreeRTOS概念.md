@@ -1,4 +1,4 @@
-# 1.移植步骤
+# 0.移植步骤
 
 1. 添加RTOS源码到Keil工程
 2. 添加head_4.c到Keil工程
@@ -6,6 +6,27 @@
 4. 添加头文件路径
 5. 添加FreeRTOSConfig.h
 6. 修改FreeRTOSConfig.h配置文件，直到工程编译无错误
+
+# 1.FreeRTOS的命名
+
+前缀是 FreeRTOS 编码风格的一部分，它们是一种**匈牙利命名法**（Hungarian Notation）的变体。
+
+这种命名法的核心思想是：**在变量或函数名的前面加上一个或多个小写字母前缀，用来表明其数据类型**。
+
+这看起来可能有些奇怪，但一旦你习惯了它，代码的可读性会大大提高，因为你不需要查找变量的定义就能立即知道它的类型。这在嵌入式开发中尤其有用，因为数据类型和大小在不同架构的处理器上可能不同。
+
+下面是 FreeRTOS 中最常见的前缀及其含义：
+
+| 前缀 | 含义                                  | 示例                                         |
+| ---- | ------------------------------------- | -------------------------------------------- |
+| v    | void (无返回值或 void 指针)           | void vTaskDelay(..);                         |
+| x    | BaseType_t (内核核心类型、句柄、状态) | TaskHandle_t xMyTask;, BaseType_t xReturned; |
+| p    | Pointer (指针)                        | void *pvParameters;                          |
+| u    | Unsigned (无符号)                     | UBaseType_t uxReadyPriorities;               |
+| c    | char (字符)                           | const char *pcName;                          |
+| pc   | pointer to char (字符串)              | const char *pcNameToSet = "MyTask";          |
+| pv   | pointer to void (通用指针)            | void *pvNewTCB;                              |
+| ux   | Unsigned BaseType_t                   | UBaseType_t uxTopReadyPriority;              |
 
 # 2.队列
 
@@ -140,7 +161,7 @@ BaseType_t xQueueSend(
 
 - **xQueue**: 目标队列的句柄，由 `xQueueCreate()` 返回。
 - **pvItemToQueue**: 一个指向要发送的数据的指针。函数会从这个地址复制 `uxItemSize`（在创建队列时定义的大小）字节的数据到队列中。
-- **xTicksToWait**: 如果队列已满，任务将**进入阻塞状态等待的最大时间**（以系统节拍 Ticks 为单位）。[[5](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF1MiXH6hSNAKuRC9Gku6Wz2l2X2LjGyLGfjKvrlpgLOlGvWyReXNjLgwhvPYKgnefQp46WeqWkF2-qfDDmwlXDUHgFaub_wpON6ZhPjuqZa5fd8ZQD1mvFHqN4zeOMSO1gY0-ZqSbaBp8rQB0PHFoc6sPkrHhyJqtz1w%3D%3D)]
+- **xTicksToWait**: 如果队列已满，任务将**进入阻塞状态等待的最大时间**（以系统节拍 Ticks 为单位）。
   - 设置为 0：如果队列已满，函数将立即返回，不会等待。
   - 设置为 `portMAX_DELAY`：如果队列已满，任务将无限期等待，直到队列有可用空间。
   - 设置为其他正值：任务将等待指定的节拍数。
@@ -493,7 +514,7 @@ FreeRTOS提供了多种类型的信号量，它们虽然都基于相同的底层
 >     - **步骤4**：myMutex 的所有权现在转移给了Task-H。
 >     - **步骤5**：由于一个更高优先级的任务Task-H现在进入了就绪态，调度器可能会立即进行一次上下文切换，让Task-H运行。
 
-# 6.队列实验
+# 6.队列消息发送接收实验
 
 FreeRTOS 队列通信实验：生产者-消费者模型
 
@@ -516,3 +537,156 @@ FreeRTOS 队列通信实验：生产者-消费者模型
    - 当队列为空时，此任务将自动进入**阻塞**状态，不消耗任何CPU。
    - 一旦接收到数据，任务将解除阻塞，并将接收到的结构体内容通过串口打印出来。
 
+`main.c`
+
+```c
+#include "stm32f4xx.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "driver.h"
+#include "data.h"
+#include <stdio.h>
+#include <string.h>
+
+#define START_TASK_PRIO 1                    // 任务优先级
+#define START_STK_SIZE  128                  // 任务堆栈大小
+TaskHandle_t StartTask_Handler;              // 任务句柄
+void         start_task(void *pvParameters); // 任务函数
+
+// 生产者任务
+#define SENDER_TASK_PRIO 2             // 任务优先级
+#define SENDER_STK_SIZE  50            // 任务堆栈大小
+TaskHandle_t SenderTask_Handler;       // 任务句柄
+void         sender_task(void *p_arg); // 任务函数
+
+// 消费者任务
+#define RECEIVER_TASK_PRIO 2             // 任务优先级
+#define RECEIVER_STK_SIZE  50            // 任务堆栈大小
+TaskHandle_t ReceiverTask_Handler;       // 任务句柄
+void         receiver_task(void *p_arg); // 任务函数
+
+QueueHandle_t xDataQueue; // 定义共享队列句柄
+
+extern led_conf_t led0;
+
+int main(void)
+{
+    usart_init(115200);
+    led_init(&led0);
+
+    // 创建queue
+    xDataQueue = xQueueCreate(5, sizeof(SensorData_t));
+    if (xDataQueue == NULL)
+    {
+        usart_send_str("[Fatal Error]: queue creat failed, no enough memory!");
+		return 1;
+    }
+
+    xTaskCreate(
+        (TaskFunction_t)start_task,        // 任务函数
+        (const char *)"start_task",        // 任务名称
+        (uint16_t)START_STK_SIZE,          // 任务堆栈大小
+        (void *)NULL,                      // 传递给任务函数的参数
+        (UBaseType_t)START_TASK_PRIO,      // 任务优先级
+        (TaskHandle_t *)&StartTask_Handler // 任务句柄
+    );
+    vTaskStartScheduler(); // 启动任务调度
+}
+
+void start_task(void *pvParameters)
+{
+    // 注册子任务
+    xTaskCreate(
+        (TaskFunction_t)sender_task,
+        (const char *)"sender_task",
+        (uint16_t)SENDER_STK_SIZE,
+        (void *)NULL,
+        (UBaseType_t)SENDER_TASK_PRIO,
+        (TaskHandle_t *)&SenderTask_Handler
+    );
+    xTaskCreate(
+        (TaskFunction_t)receiver_task,
+        (const char *)"receiver_task",
+        (uint16_t)RECEIVER_STK_SIZE,
+        (void *)NULL,
+        (UBaseType_t)RECEIVER_TASK_PRIO,
+        (TaskHandle_t *)&ReceiverTask_Handler
+    );
+    vTaskDelete(StartTask_Handler); // 删除开始任务
+    taskEXIT_CRITICAL();            // 退出临界区
+}
+
+void sender_task(void *p_arg)
+{
+    SensorData_t sensor_data;
+    BaseType_t   xStatus;
+
+    while (1)
+    {
+        random_sensor_data(&sensor_data);                                   // 生成随机数据s
+        xStatus = xQueueSend(xDataQueue, &sensor_data, pdMS_TO_TICKS(100)); // 将数据发送到队列
+
+        if (xStatus != pdPASS)
+        {
+            usart_send_str("[Fatal Error]: add queue error, queue full.\n");
+        }
+        vTaskDelay(pdMS_TO_TICKS(500)); // 生产者每隔0.5s往队列里放一个元素，放的快
+    }
+}
+
+void receiver_task(void *p_arg)
+{
+    SensorData_t sensor_data;
+    BaseType_t   xStatus;
+
+    while (1)
+    {
+        xStatus = xQueueReceive(xDataQueue, &sensor_data, pdMS_TO_TICKS(100));
+
+        if (xStatus == pdPASS)
+        {
+            char msg[100];
+            sprintf(msg, "[Receiver]: receive sensor data [id: %u], [val: %u], [timestamp: %u].\n", sensor_data.id, sensor_data.val, sensor_data.timestamp);
+            usart_send_str(msg);
+            // 队列可取，则led0亮
+            led_on(&led0);
+        } else
+        {
+            // 队列为空，则led0灭
+            led_off(&led0);
+        }
+        vTaskDelay(pdMS_TO_TICKS(2000)); // 消费者每隔2s才取一次，取的比放的慢，会造成队列满的情况
+    }
+}
+
+```
+
+# 7.信号量实验
+
+FreeRTOS 互斥量 (Mutex) 实验：保护共享的串口打印资源
+
+**硬件与软件需求**
+
+- **硬件**：任何支持 FreeRTOS 的开发板（如 STM32, ESP32 等）。
+- **软件**：配置好的 FreeRTOS 开发环境。
+- **外设**：一个可用的串口，连接到电脑的串口监视器以查看输出。
+
+**实验设计**
+
+我们将创建一个共享资源：串口。想象一下，这个串口就像一个**只能同时被一个人使用的麦克风**。
+
+1. **创建两个任务**：
+   
+   - vHighPriorityTask：一个高优先级的任务。
+   - vLowPriorityTask：一个低优先级的任务。
+2. **任务行为**：
+   
+   - 两个任务都会在一个循环中，尝试通过串口打印一条很长的、能够标识自己的信息。
+   - 高优先级任务的运行频率会高于低优先级任务，这样它就有机会在低优先级任务打印到一半时**抢占**CPU，从而制造出混乱。
+3. **实验步骤**：
+   
+   - **第一步（展示问题）**：我们会先运行不带任何保护措施的代码，观察串口输出的混乱情况。
+   
+     
+   - **第二步（解决问题）**：我们会创建一个互斥量（Mutex），并修改任务代码，要求它们在打印信息前必须先“获取麦克风”（xSemaphoreTake），打印完后再“放下麦克风”（xSemaphoreGive）。然后观察串口输出的有序情况。

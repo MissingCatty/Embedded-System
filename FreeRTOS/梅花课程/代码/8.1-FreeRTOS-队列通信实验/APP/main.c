@@ -34,13 +34,11 @@ int main(void)
     led_init(&led0);
 
     // 创建queue
-    xDataQueue = xQueueCreate(10, sizeof(SensorData_t));
+    xDataQueue = xQueueCreate(5, sizeof(SensorData_t));
     if (xDataQueue == NULL)
     {
         usart_send_str("[Fatal Error]: queue creat failed, no enough memory!");
-    } else
-    {
-        return 1;
+		return 1;
     }
 
     xTaskCreate(
@@ -89,9 +87,9 @@ void sender_task(void *p_arg)
 
         if (xStatus != pdPASS)
         {
-            usart_send_str("[Fatal Error]: add queue error, queue full.");
+            usart_send_str("[Fatal Error]: add queue error, queue full.\n");
         }
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(500)); // 生产者每隔0.5s往队列里放一个元素，放的快
     }
 }
 
@@ -102,19 +100,20 @@ void receiver_task(void *p_arg)
 
     while (1)
     {
-//        xStatus = xQueueReceive(xDataQueue, &sensor_data, pdMS_TO_TICKS(100));
+        xStatus = xQueueReceive(xDataQueue, &sensor_data, pdMS_TO_TICKS(100));
 
-//        if (xStatus == pdPASS)
-//        {
-//            char msg[100];
-//            sprintf(msg, "[Receiver]: receive sensor data [id: %u], [val: %u], [timestamp: %u].", sensor_data.id, sensor_data.val, sensor_data.timestamp);
-//            usart_send_str(msg);
-//            // 队列可取，则led0亮
-//            led_on(&led0);
-//        } else
-//        {
-//            // 队列为空，则led0灭
-//            led_off(&led0);
-//        }
+        if (xStatus == pdPASS)
+        {
+            char msg[100];
+            sprintf(msg, "[Receiver]: receive sensor data [id: %u], [val: %u], [timestamp: %u].\n", sensor_data.id, sensor_data.val, sensor_data.timestamp);
+            usart_send_str(msg);
+            // 队列可取，则led0亮
+            led_on(&led0);
+        } else
+        {
+            // 队列为空，则led0灭
+            led_off(&led0);
+        }
+        vTaskDelay(pdMS_TO_TICKS(2000)); // 消费者每隔2s才取一次，取的比放的慢，会造成队列满的情况
     }
 }
