@@ -850,7 +850,7 @@ ARM Macro Assembler    Page 14
 
 
 interwork --depend=.\objects\startup_stm32f40xx.d -o.\objects\startup_stm32f40x
-x.o --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 541" --
+x.o --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 542" --
 predefine="STM32F407xx SETA 1" --list=.\listings\startup_stm32f40xx.lst Firmwar
 e\CMSIS\Device\startup_stm32f40xx.s
 

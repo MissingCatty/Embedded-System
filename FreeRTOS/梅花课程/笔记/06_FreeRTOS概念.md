@@ -688,5 +688,135 @@ FreeRTOS 互斥量 (Mutex) 实验：保护共享的串口打印资源
    
    - **第一步（展示问题）**：我们会先运行不带任何保护措施的代码，观察串口输出的混乱情况。
    
-     
    - **第二步（解决问题）**：我们会创建一个互斥量（Mutex），并修改任务代码，要求它们在打印信息前必须先“获取麦克风”（xSemaphoreTake），打印完后再“放下麦克风”（xSemaphoreGive）。然后观察串口输出的有序情况。
+
+```c
+#include "stm32f4xx.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "driver.h"
+#include "semphr.h"
+#include <stdio.h>
+#include <string.h>
+
+#define START_TASK_PRIO 3                    // 任务优先级
+#define START_STK_SIZE  128                  // 任务堆栈大小
+TaskHandle_t StartTask_Handler;              // 任务句柄
+void         start_task(void *pvParameters); // 任务函数
+
+// 低优先级任务
+#define LOW_TASK_PRIO 2                  // 任务优先级
+#define LOW_STK_SIZE  256                // 任务堆栈大小
+TaskHandle_t LowPrioTask_Handler;        // 任务句柄
+void         low_prio_task(void *p_arg); // 任务函数
+
+// 高优先级任务
+#define HIGH_TASK_PRIO 2                  // 任务优先级
+#define HIGH_STK_SIZE  256                // 任务堆栈大小
+TaskHandle_t HighPrioTask_Handler;        // 任务句柄
+void         high_prio_task(void *p_arg); // 任务函数
+
+SemaphoreHandle_t xUARTSemaphore; // 定义互斥量句柄
+
+extern led_conf_t led0;
+
+int main(void)
+{
+    usart_init(115200);
+    led_init(&led0);
+
+    // 创建互斥量
+    xUARTSemaphore = xSemaphoreCreateMutex();
+
+    xTaskCreate(
+        (TaskFunction_t)start_task,        // 任务函数
+        (const char *)"start_task",        // 任务名称
+        (uint16_t)START_STK_SIZE,          // 任务堆栈大小
+        (void *)NULL,                      // 传递给任务函数的参数
+        (UBaseType_t)START_TASK_PRIO,      // 任务优先级
+        (TaskHandle_t *)&StartTask_Handler // 任务句柄
+    );
+    vTaskStartScheduler(); // 启动任务调度
+}
+
+void start_task(void *pvParameters)
+{
+    // 注册子任务
+    xTaskCreate(
+        (TaskFunction_t)low_prio_task,
+        (const char *)"low_prio_task",
+        (uint16_t)LOW_STK_SIZE,
+        (void *)NULL,
+        (UBaseType_t)LOW_TASK_PRIO,
+        (TaskHandle_t *)&LowPrioTask_Handler
+    );
+    xTaskCreate(
+        (TaskFunction_t)high_prio_task,
+        (const char *)"high_prio_task",
+        (uint16_t)HIGH_STK_SIZE,
+        (void *)NULL,
+        (UBaseType_t)HIGH_TASK_PRIO,
+        (TaskHandle_t *)&HighPrioTask_Handler
+    );
+    vTaskDelete(StartTask_Handler); // 删除开始任务
+}
+
+void low_prio_task(void *p_arg)
+{
+    while (1)
+    {
+        usart_send_str("[low] prio task running...\r\n");
+        vTaskDelay(pdMS_TO_TICKS(20));
+    }
+}
+
+void high_prio_task(void *p_arg)
+{
+    while (1)
+    {
+        usart_send_str("<high> prio task running...\r\n");
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+```
+
+像上述程序中描述的那样，不使用互斥信号量保护，由于两个任务的优先级相等，所以会出现：当low任务向串口发送数据时，发送到一半时间片跑完了，接下来high任务抢占cpu进行发送，导致发送的数据都是乱的，并不是low先完整的发送，然后high再完整的发送，结果如下：
+
+![image-20250915153144560](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F09%2Fed3cbf8445fab4a48232c51c8ab96dde.png)
+
+因此，在每个任务中的发送部分，需要使用互斥量将发送部分的代码段保护起来，对两个任务的代码段执行如下修改：
+
+```c
+void low_prio_task(void *p_arg)
+{
+   while (1)
+   {
+       // 获取互斥量
+       if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
+       {
+           usart_send_str("[low] prio task running...\r\n");
+           // 释放互斥量
+           xSemaphoreGive(xUARTSemaphore);
+           vTaskDelay(pdMS_TO_TICKS(20));
+       }
+   }
+}
+
+void high_prio_task(void *p_arg)
+{
+   while (1)
+   {
+       // 获取互斥量
+       if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
+       {
+           usart_send_str("<high> prio task running...\r\n");
+           // 释放互斥量
+           xSemaphoreGive(xUARTSemaphore);
+           vTaskDelay(pdMS_TO_TICKS(10));
+       }
+   }
+}
+```
+
+![image-20250915153516348](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/machine-learning-pic/2025%2F09%2F9858290d5a41a778e6c1120568ed5b13.png)

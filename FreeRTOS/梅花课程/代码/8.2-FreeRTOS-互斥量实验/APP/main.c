@@ -3,12 +3,11 @@
 #include "task.h"
 #include "queue.h"
 #include "driver.h"
-#include "data.h"
 #include "semphr.h"
 #include <stdio.h>
 #include <string.h>
 
-#define START_TASK_PRIO 1                    // 任务优先级
+#define START_TASK_PRIO 3                    // 任务优先级
 #define START_STK_SIZE  128                  // 任务堆栈大小
 TaskHandle_t StartTask_Handler;              // 任务句柄
 void         start_task(void *pvParameters); // 任务函数
@@ -20,7 +19,7 @@ TaskHandle_t LowPrioTask_Handler;        // 任务句柄
 void         low_prio_task(void *p_arg); // 任务函数
 
 // 高优先级任务
-#define HIGH_TASK_PRIO 3                  // 任务优先级
+#define HIGH_TASK_PRIO 2                  // 任务优先级
 #define HIGH_STK_SIZE  256                // 任务堆栈大小
 TaskHandle_t HighPrioTask_Handler;        // 任务句柄
 void         high_prio_task(void *p_arg); // 任务函数
@@ -52,14 +51,6 @@ void start_task(void *pvParameters)
 {
     // 注册子任务
     xTaskCreate(
-        (TaskFunction_t)high_prio_task,
-        (const char *)"high_prio_task",
-        (uint16_t)HIGH_STK_SIZE,
-        (void *)NULL,
-        (UBaseType_t)HIGH_TASK_PRIO,
-        (TaskHandle_t *)&HighPrioTask_Handler
-    );
-    xTaskCreate(
         (TaskFunction_t)low_prio_task,
         (const char *)"low_prio_task",
         (uint16_t)LOW_STK_SIZE,
@@ -67,38 +58,62 @@ void start_task(void *pvParameters)
         (UBaseType_t)LOW_TASK_PRIO,
         (TaskHandle_t *)&LowPrioTask_Handler
     );
-
+    xTaskCreate(
+        (TaskFunction_t)high_prio_task,
+        (const char *)"high_prio_task",
+        (uint16_t)HIGH_STK_SIZE,
+        (void *)NULL,
+        (UBaseType_t)HIGH_TASK_PRIO,
+        (TaskHandle_t *)&HighPrioTask_Handler
+    );
     vTaskDelete(StartTask_Handler); // 删除开始任务
 }
 
 void low_prio_task(void *p_arg)
 {
-    while (1)
-    {
-        // 获取互斥量
-        if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
-        {
-            usart_send_str("[low] prio task running...printing Part A.\r\n");
-            usart_send_str("[low] prio task running...printing Part B.\r\n");
-            // 释放互斥量
-            xSemaphoreGive(xUARTSemaphore);
-        }
-        // vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+   while (1)
+   {
+       // 获取互斥量
+       if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
+       {
+           usart_send_str("[low] prio task running...\r\n");
+           // 释放互斥量
+           xSemaphoreGive(xUARTSemaphore);
+           vTaskDelay(pdMS_TO_TICKS(20));
+       }
+   }
 }
 
 void high_prio_task(void *p_arg)
 {
-    while (1)
-    {
-        // 获取互斥量
-        if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
-        {
-            usart_send_str("<high> prio task running...printing Part A.\r\n");
-            usart_send_str("<high> prio task running...printing Part B.\r\n");
-            // 释放互斥量
-            xSemaphoreGive(xUARTSemaphore);
-        }
-        // vTaskDelay(pdMS_TO_TICKS(700));
-    }
+   while (1)
+   {
+       // 获取互斥量
+       if (xSemaphoreTake(xUARTSemaphore, portMAX_DELAY) == pdTRUE)
+       {
+           usart_send_str("<high> prio task running...\r\n");
+           // 释放互斥量
+           xSemaphoreGive(xUARTSemaphore);
+           vTaskDelay(pdMS_TO_TICKS(10));
+       }
+   }
 }
+
+// void low_prio_task(void *p_arg)
+// {
+//     while (1)
+//     {
+//         usart_send_str("[low] prio task running...\r\n");
+//         vTaskDelay(pdMS_TO_TICKS(20));
+//     }
+// }
+
+// void high_prio_task(void *p_arg)
+// {
+//     while (1)
+//     {
+//         usart_send_str("<high> prio task running...\r\n");
+//         vTaskDelay(pdMS_TO_TICKS(10));
+//     }
+// }
+
