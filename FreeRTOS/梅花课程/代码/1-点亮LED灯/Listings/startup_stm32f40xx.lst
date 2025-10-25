@@ -850,9 +850,9 @@ ARM Macro Assembler    Page 14
 
 
 interwork --depend=.\objects\startup_stm32f40xx.d -o.\objects\startup_stm32f40x
-x.o --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 542" --
-predefine="STM32F407xx SETA 1" --list=.\listings\startup_stm32f40xx.lst Firmwar
-e\CMSIS\Device\startup_stm32f40xx.s
+x.o --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__
+UVISION_VERSION SETA 543" --predefine="STM32F407xx SETA 1" --list=.\listings\st
+artup_stm32f40xx.lst Firmware\CMSIS\Device\startup_stm32f40xx.s
 
 
 
@@ -1946,4 +1946,4 @@ Symbol: __main
       At line 181 in file Firmware\CMSIS\Device\startup_stm32f40xx.s
 Comment: __main used once
 2 symbols
-445 symbols in table
+446 symbols in table

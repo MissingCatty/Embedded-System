@@ -90,6 +90,8 @@
 - 将ARMCC5安装到`Keil_v5/Arm`目录下（否则会有授权问题）
 
 - `Manage Project Items-Folders/Extensions-...`中添加ARMCC5的安装根目录
+
+  ![image-20251025155242351](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/25%2F10%2F4ed3df67e4bcc35f193e0c4b4a868178.png)
 - 点击“魔术棒”，在`Target`下选择ARM编译器
 
 ## 2.修改Keil字体
@@ -132,4 +134,22 @@
 
 ## 5. 每次安装Keil后记得要破解
 
-如题
+以**管理员**身份运行Keil，点击”License Management“ 进行下一步
+
+![](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/25%2F10%2F68ccea7e091e7c5cbc836d108a62f8f9.png)
+
+在这里复制我们自己的 CID
+
+![CID](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/25%2F10%2Ff9687edaacc1da81fad2f7f7512b07b4.png)
+
+然后打开我们的注册机，把我们的 CID 粘贴到对应处 Target
+
+这里选择我们 ” ARM “
+
+![生成](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/25%2F10%2Fb8696b13e9afb4151a0a13996d09d725.png)
+
+回到Keil5 中 将生成的 ID Code 粘贴至”New License ID Code“ 处 并且点击 ”Add LIC“
+
+![ID COde](https://zyc-learning-1309954661.cos.ap-nanjing.myqcloud.com/25%2F10%2F783f9c830068086c9a45da51987768ba.png)
+
+”Add LIC“后 就出现如图片中的界面 说明我们完成了注册机的注册
