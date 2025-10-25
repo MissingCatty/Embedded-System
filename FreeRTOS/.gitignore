@@ -40,7 +40,6 @@ Listings/
 *.py
 
 # 本地IDE配置文件
-.vscode/
 .idea/
 
 # 操作系统生成的文件
