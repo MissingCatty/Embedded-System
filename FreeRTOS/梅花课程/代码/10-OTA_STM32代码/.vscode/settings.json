@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "stm32f4xx.h": "c",
+    "uart.h": "c",
+    "stdint.h": "c",
+    "system_stm32f4xx.h": "c",
+    "button.h": "c",
+    "main.h": "c",
+    "elog.h": "c",
+    "stdbool.h": "c"
+  }
+}
