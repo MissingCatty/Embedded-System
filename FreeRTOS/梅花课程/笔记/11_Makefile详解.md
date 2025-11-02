@@ -656,7 +656,7 @@ $(TARGET): $(LDSCRIPT) $(O_PATHS) Makefile
 	@$(CROSS_COMPILE)gcc $(O_PATHS) $(L_FLAGS) -o $(FINAL_OBJ_FILE).elf
 	@$(CROSS_COMPILE)objcopy --gap-fill 0x00 -O ihex $(FINAL_OBJ_FILE).elf $(FINAL_OBJ_FILE).hex
 	@$(CROSS_COMPILE)objcopy --gap-fill 0x00 -O binary -S $(FINAL_OBJ_FILE).elf $(FINAL_OBJ_FILE).bin
-	@$(CROSS_COMPILE)size $@.elf
+	@$(CROSS_COMPILE)size $(FINAL_OBJ_FILE).elf
 	@echo "  Build Finish"
 
 

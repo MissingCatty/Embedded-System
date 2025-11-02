@@ -2,6 +2,41 @@
 
 同时之后用到的ESP32-C3的开发也是需要在linux中做的。
 
+## 为什么Bootloader程序编写必须在Linux环境下进行？
+
+您理论上可以在 Windows 上配置复杂的交叉编译环境（如使用 Cygwin、MinGW/MSYS2），或者在 macOS 上（使用 Homebrew 等），但几乎所有 Bootloader（如 U-Boot, GRUB, Barebox）的开发者和社区都默认您在使用 Linux。
+
+**核心原因在于：编译 Bootloader 不仅仅是“编译” (Compile)，它是一个复杂的“构建过程” (Build Process)，这个过程严重依赖 Linux/Unix 的生态系统。**
+
+#### 工具链 (Toolchain) 的原生支持
+
+- **交叉编译器 (Cross-Compiler)**：Bootloader 通常运行在 ARM、MIPS、RISC-V 等非 x86 架构上，而我们的开发电脑是 x86。这就需要“交叉编译”。
+- **GNU Toolchain (GCC, Binutils)**：GCC（编译器）、`ld`（链接器）、`as`（汇编器）、`objcopy`（格式转换器）等工具是编译 Bootloader 的基石。这些工具诞生于 Unix 环境，在 Linux 上是“一等公民”，安装、配置和使用都最简单、最稳定。
+
+#### 如果在Windows上下载gcc的eabi，能否不在Linux上编译？
+
+您在 Windows 上安装的 `arm-linux-gnueabi-gcc.exe` 只是整个工具链中的一个（尽管是核心）工具。一个完整的 Bootloader 项目，其编译过程（`Makefile`）中，除了调用 `gcc` 之外，还严重依赖**几十个在 Linux 中“理所当然”存在，但在 Windows 中“完全没有”的工具**。
+
+即使您在 Windows 上有了 GCC，您仍然缺少：
+
+**1. POSIX Shell (如 Bash)**
+
+Bootloader 的 `Makefile` 并不是一个简单的编译列表，它包含了成百上千行的 `bash` 脚本。Windows 的 `cmd.exe` 或 `PowerShell` 无法解释这些脚本。
+
+**2. GNU Coreutils (核心工具集)**
+
+在编译过程中，`Makefile` 会不断调用这些小工具来处理文件、配置和数据：
+
+- `sed` & `awk`：用于动态修改配置文件和源代码。
+- `grep`：用于搜索。
+- `dd`：用于精确地创建和填充二进制镜像。
+- `tr`：用于转换字符。
+- `cat`, `cp`, `mv`, `rm`, `mkdir`：这些基本命令的参数和行为在 Linux 和 Windows 上都有细微但致命的差别。
+
+**3. 专门的构建工具**
+
+- `make`：您需要 GNU Make。虽然有 Windows 版本的 `make` (gnumake)，但它本身并不能解决上述 shell 和 coreutils 的缺失。
+
 ## 插件安装
 
 1. remote ssh
