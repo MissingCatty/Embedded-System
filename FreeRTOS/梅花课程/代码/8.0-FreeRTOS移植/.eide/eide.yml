@@ -1,0 +1,232 @@
+version: "4.1"
+name: FreeRTOS
+type: ARM
+deviceName: null
+packDir: null
+srcDirs: []
+virtualFolder:
+  name: <virtual_root>
+  files: []
+  folders:
+    - name: APP
+      files:
+        - path: APP/main.c
+        - path: APP/board.c
+      folders: []
+    - name: Driver
+      files:
+        - path: Driver/delay/delay.c
+        - path: Driver/led/led.c
+        - path: Driver/usart/usart.c
+        - path: Driver/timer/timer.c
+      folders: []
+    - name: Firmware
+      files:
+        - path: Firmware/CMSIS/Device/startup_stm32f40xx.s
+        - path: Firmware/CMSIS/Device/stm32f4xx_it.c
+        - path: Firmware/CMSIS/Device/system_stm32f4xx.c
+        - path: Firmware/Driver/src/misc.c
+        - path: Firmware/Driver/src/stm32f4xx_adc.c
+        - path: Firmware/Driver/src/stm32f4xx_can.c
+        - path: Firmware/Driver/src/stm32f4xx_cec.c
+        - path: Firmware/Driver/src/stm32f4xx_crc.c
+        - path: Firmware/Driver/src/stm32f4xx_cryp.c
+        - path: Firmware/Driver/src/stm32f4xx_cryp_aes.c
+        - path: Firmware/Driver/src/stm32f4xx_cryp_des.c
+        - path: Firmware/Driver/src/stm32f4xx_cryp_tdes.c
+        - path: Firmware/Driver/src/stm32f4xx_dac.c
+        - path: Firmware/Driver/src/stm32f4xx_dbgmcu.c
+        - path: Firmware/Driver/src/stm32f4xx_dcmi.c
+        - path: Firmware/Driver/src/stm32f4xx_dfsdm.c
+        - path: Firmware/Driver/src/stm32f4xx_dma.c
+        - path: Firmware/Driver/src/stm32f4xx_dma2d.c
+        - path: Firmware/Driver/src/stm32f4xx_dsi.c
+        - path: Firmware/Driver/src/stm32f4xx_exti.c
+        - path: Firmware/Driver/src/stm32f4xx_flash.c
+        - path: Firmware/Driver/src/stm32f4xx_flash_ramfunc.c
+        - path: Firmware/Driver/src/stm32f4xx_fmpi2c.c
+        - path: Firmware/Driver/src/stm32f4xx_fsmc.c
+        - path: Firmware/Driver/src/stm32f4xx_gpio.c
+        - path: Firmware/Driver/src/stm32f4xx_hash.c
+        - path: Firmware/Driver/src/stm32f4xx_hash_md5.c
+        - path: Firmware/Driver/src/stm32f4xx_hash_sha1.c
+        - path: Firmware/Driver/src/stm32f4xx_i2c.c
+        - path: Firmware/Driver/src/stm32f4xx_iwdg.c
+        - path: Firmware/Driver/src/stm32f4xx_lptim.c
+        - path: Firmware/Driver/src/stm32f4xx_ltdc.c
+        - path: Firmware/Driver/src/stm32f4xx_pwr.c
+        - path: Firmware/Driver/src/stm32f4xx_qspi.c
+        - path: Firmware/Driver/src/stm32f4xx_rcc.c
+        - path: Firmware/Driver/src/stm32f4xx_rng.c
+        - path: Firmware/Driver/src/stm32f4xx_rtc.c
+        - path: Firmware/Driver/src/stm32f4xx_sai.c
+        - path: Firmware/Driver/src/stm32f4xx_sdio.c
+        - path: Firmware/Driver/src/stm32f4xx_spdifrx.c
+        - path: Firmware/Driver/src/stm32f4xx_spi.c
+        - path: Firmware/Driver/src/stm32f4xx_syscfg.c
+        - path: Firmware/Driver/src/stm32f4xx_tim.c
+        - path: Firmware/Driver/src/stm32f4xx_usart.c
+        - path: Firmware/Driver/src/stm32f4xx_wwdg.c
+        - path: Firmware/CMSIS/Device/stm32f4xx_conf.h
+      folders: []
+    - name: Lib
+      files: []
+      folders:
+        - name: freertos
+          files: []
+          folders:
+            - name: core
+              files:
+                - path: Lib/FreeRTOS/core/croutine.c
+                - path: Lib/FreeRTOS/core/event_groups.c
+                - path: Lib/FreeRTOS/core/list.c
+                - path: Lib/FreeRTOS/core/queue.c
+                - path: Lib/FreeRTOS/core/stream_buffer.c
+                - path: Lib/FreeRTOS/core/tasks.c
+                - path: Lib/FreeRTOS/core/timers.c
+              folders: []
+            - name: portable
+              files:
+                - path: Lib/FreeRTOS/portable/RVDS/ARM_CM4F/port.c
+                - path: Lib/FreeRTOS/portable/MemMang/heap_4.c
+              folders: []
+dependenceList: []
+outDir: build
+miscInfo:
+  uid: a65bb3e043a1027f82ed0fc01dc35251
+targets:
+  Target_1:
+    cppPreprocessAttrs:
+      defineList:
+        - STM32F40_41xxx
+        - USE_STDPERIPH_DRIVER
+        - HSE_VALUE=8000000
+      incList:
+        - Driver/inc
+        - Firmware/CMSIS/Core
+        - Firmware/CMSIS/Device
+        - Firmware/Driver/inc
+        - APP
+        - Driver
+        - Lib/FreeRTOS/include
+        - Lib/FreeRTOS/portable/RVDS/ARM_CM4F
+        - .cmsis/include
+        - RTE/_Target_1
+      libList: []
+    excludeList: []
+    toolchain: AC5
+    toolchainConfigMap:
+      AC5:
+        archExtensions: ""
+        cpuType: Cortex-M4
+        floatingPointHardware: single
+        options:
+          version: 4
+          afterBuildTasks: []
+          asm-compiler: {}
+          beforeBuildTasks: []
+          c/cpp-compiler:
+            CXX_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            C_FLAGS: --diag_suppress=1 --diag_suppress=1295
+            c99-mode: true
+            gnu-extensions: true
+            one-elf-section-per-function: true
+            optimization: level-0
+            warnings: all-warnings
+          global:
+            output-debug-info: enable
+            use-microLIB: true
+          linker:
+            $disableOutputTask: true
+            $outputTaskExcludes:
+              - .bin
+            output-format: elf
+            ro-base: "0x08000000"
+            rw-base: "0x20000000"
+            xo-base: ""
+        scatterFilePath: ""
+        storageLayout:
+          RAM:
+            - id: 1
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 3
+              isChecked: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              noInit: false
+              tag: RAM
+            - id: 1
+              isChecked: true
+              mem:
+                size: "0x20000"
+                startAddr: "0x20000000"
+              noInit: false
+              tag: IRAM
+            - id: 2
+              isChecked: false
+              mem:
+                size: "0x10000"
+                startAddr: "0x10000000"
+              noInit: false
+              tag: IRAM
+          ROM:
+            - id: 1
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 3
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: ROM
+            - id: 1
+              isChecked: true
+              isStartup: true
+              mem:
+                size: "0x80000"
+                startAddr: "0x8000000"
+              tag: IROM
+            - id: 2
+              isChecked: false
+              isStartup: false
+              mem:
+                size: "0x0"
+                startAddr: "0x0"
+              tag: IROM
+        useCustomScatterFile: false
+    uploadConfigMap:
+      JLink:
+        baseAddr: ""
+        bin: ""
+        cpuInfo:
+          cpuName: "null"
+          vendor: "null"
+        otherCmds: ""
+        proType: 1
+        speed: 8000
+    uploader: JLink

@@ -4,6 +4,7 @@
 
 int main(void)
 {
+		MyUSART_Init(115200);
     delay_init();
     LCD_Init();
     LCD_Clear(RED);
@@ -19,6 +20,8 @@ int main(void)
         dht11_receive_data();
         sprintf(msg, "T: %d, H: %d", dht11_temp_integer, dht11_humid_integer);
         LCD_ShowString(0, 0, 240, 30, 24, msg);
+				printf("Humid: %d\n", dht11_temp_integer);
+        printf("Temp: %d\n", dht11_humid_integer);
         delay_s(1);
     }
 }

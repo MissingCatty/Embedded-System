@@ -3,6 +3,7 @@
 #include "task.h"
 #include "driver.h"
 #include <string.h>
+#include "lvgl.h"
 
 #define START_TASK_PRIO 4                    // 任务优先级
 #define START_STK_SIZE  128                  // 任务堆栈大小
@@ -48,17 +49,24 @@ void start_task(void *pvParameters)
     vTaskDelete(Start_Task_Handler); // 删除开始任务
 }
 
+
+LV_IMG_DECLARE(img_meihua);
 void gui_task(void *p_arg)
 {
     // lvgl驱动初始化
     lvgl_ili9341_init(); // 初始化lvgl
 
-    lv_obj_t *screen = lv_screen_active();                                 // 获取当前为active的屏幕指针，一个屏幕为所有空间根容器，自己没有父容器
-    lv_obj_set_style_bg_color(screen, lv_color_make(0xff, 0xff, 0xff), 0); // 将屏幕背景设置为白色
-    lv_obj_t *label = lv_label_create(screen);                             // 在screen对象上创建一个label
-    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);                           // 将label对象中心点对齐到屏幕的顶部中间，且无偏移
-    lv_label_set_text(label, "Hello World!");
-    lv_timer_handler();
+//    lv_obj_t *screen = lv_screen_active();                                 // 获取当前为active的屏幕指针，一个屏幕为所有空间根容器，自己没有父容器
+//    lv_obj_set_style_bg_color(screen, lv_color_make(0xff, 0xff, 0xff), 0); // 将屏幕背景设置为白色
+//    lv_obj_t *label = lv_label_create(screen);                             // 在screen对象上创建一个label
+//    lv_obj_align(label, LV_ALIGN_TOP_MID, 0, 0);                           // 将label对象中心点对齐到屏幕的顶部中间，且无偏移
+//    lv_label_set_text(label, "Hello World!");
+//    lv_timer_handler();
+	
+		lv_obj_t * img = lv_image_create(lv_scr_act());
+		lv_img_set_src(img, &img_meihua);
+		lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+	  lv_timer_handler();
 
     while (1)
     {

@@ -4,5 +4,6 @@
 #include "dht11.h"
 #include "lcd.h"
 #include "delay.h"
+#include "usart.h"
 
 #endif

@@ -3,49 +3,54 @@
 <pre>
 <h1>礦ision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: μVision V5.42.0.0
+IDE-Version: μVision V5.43.1.0
 Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 1 Administrator, 1, LIC=FYKYW-Q00QV-RATDM-XVH04-PT15V-1N31N
+License Information: 1 1, 1, LIC=VGXG8-37RNZ-PC9J8-3JJV9-PN107-JPAR8
  
 Tool Versions:
-Toolchain:       MDK-ARM Plus  Version: 5.42.0.0
-Toolchain Path:  C:\Program Files\Keil_v5\ARM\ARMCC5\Bin
+Toolchain:       MDK-ARM Plus  Version: 5.43.0.0
+Toolchain Path:  D:\Keil_v5\ARM\ARMCC5\Bin
 C Compiler:      Armcc.exe V5.06 update 7 (build 960)
 Assembler:       Armasm.exe V5.06 update 7 (build 960)
 Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
 Library Manager: ArmAr.exe V5.06 update 7 (build 960)
 Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
-CPU DLL:         SARMCM3.DLL V5.42.0.0
+CPU DLL:         SARMCM3.DLL V5.43.0.0
 Dialog DLL:      DCM.DLL V1.17.5.0
 Target DLL:      Segger\JL2CM3.dll V2.99.45.0
 Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
-C:\Repository\embedding-system-noob\FreeRTOS\梅花课程\代码\7-dht11实验\FreeRTOS.uvprojx
-Project File Date:  09/23/2025
+D:\Repository\embedding-system-noob\FreeRTOS\梅花课程\代码\7-dht11实验\FreeRTOS.uvprojx
+Project File Date:  11/05/2025
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Program Files\Keil_v5\ARM\ARMCC5\Bin'
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\Keil_v5\ARM\ARMCC5\Bin'
 Build target 'Target_1'
-compiling lcd.c...
-.\Driver\driver.h(8): warning:  #1-D: last line of file ends without a newline
-  #endif
-Driver\src\lcd.c: 1 warning, 0 errors
+compiling usart.c...
+compiling _printf.c...
+compiling main.c...
+APP\main.c(12): warning:  #69-D: integer conversion resulted in truncation
+      LCD_Clear(~RED);
+APP\main.c(22): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+          LCD_ShowString(0, 0, 240, 30, 24, msg);
+APP\main.c: 2 warnings, 0 errors
+compiling stm32f4xx_it.c...
 linking...
-Program Size: Code=18944 RO-data=6504 RW-data=12 ZI-data=1044  
-".\Objects\FreeRTOS.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=19732 RO-data=6504 RW-data=32 ZI-data=1040  
+".\Objects\FreeRTOS.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: Keil
-                https://www.keil.com/pack/Keil.STM32F4xx_DFP.3.0.0.pack
-                Keil::STM32F4xx_DFP@3.0.0
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.3.1.1.pack
+                Keil::STM32F4xx_DFP@3.1.1
                 STMicroelectronics STM32F4 Series Device Support
 
 <h2>Collection of Component include folders:</h2>
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

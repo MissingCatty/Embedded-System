@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>STM32F407VETx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.3.0.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.3.1.1</PackID>
           <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x10000000,0x00010000) IROM(0x08000000,0x00080000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -389,6 +389,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\main.c</FilePath>
             </File>
+            <File>
+              <FileName>_printf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\_printf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -408,6 +413,11 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Driver\src\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver\src\usart.c</FilePath>
             </File>
           </Files>
         </Group>
