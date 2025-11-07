@@ -48,11 +48,16 @@ void start_task(void *pvParameters)
     vTaskDelete(StartTask_Handler); // 删除开始任务
 }
 
+char ssid[] = "HonorMagic6";
+char pwd[]  = "22162216";
+
 void usart_task(void *p_arg)
 {
     esp_at_init();
     esp_wifi_init();
-    esp_wifi_query_state(&esp_wifi_state);
+    esp_wifi_connected();
+    esp_at_wifi_connect(ssid, pwd);
+    esp_wifi_connected();
     while (1)
     {
         // if (xSemaphoreTake(xUsartRxSemaphore, portMAX_DELAY) == pdTRUE)

@@ -150,27 +150,59 @@ void esp_wifi_init(void)
     esp_at_send_cmd("AT+CWMODE=1\r\n", 2000);
 }
 
-bool esp_wifi_connected(void)
+bool _esp_parse_wifi_cwstate(char *str)
 {
-    if (esp_at_send_cmd("AT+"))
+    str = strstr(str, "+CWSTATE:");
+    if (str == NULL)
     {
-        /* code */
+        return false;
     }
-    
-}
-
-bool _parse_wifi_state(char *str, esp_wifi_state_t *state)
-{
-
+    if (sscanf(str, "+CWSTATE:%d,\"%63[^\"]", &esp_wifi_state.state, &esp_wifi_state.ssid) == 2)
+    {
+        return true;
+    }
     return false;
 }
 
-void esp_wifi_query_state(esp_wifi_state_t *state)
+bool esp_wifi_connected(void)
 {
     if (esp_at_send_cmd("AT+CWSTATE?\r\n", 2000) == ESP_AT_ACK_OK)
     {
-        _parse_wifi_state(ack_info_buffer, state);
+        _esp_parse_wifi_cwstate((char *)ack_info_buffer);
+        if (esp_wifi_state.state == 2)
+        {
+            return true;
+        }
     }
+    return false;
+}
+
+bool esp_at_wifi_connect(const char ssid[], const char pwd[])
+{
+    char cmd[128];
+    sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, pwd);
+    printf("%s", cmd);
+    if (esp_at_send_cmd(cmd, 20000) == ESP_AT_ACK_OK)
+    {
+        esp_at_send_cmd("AT+CWJAP?\r\n", 2000);
+        _esp_parse_wifi_cwjap((char *)ack_info_buffer);
+        return true;
+    }
+    return false;
+}
+
+bool _esp_parse_wifi_cwjap(char *str)
+{
+    str = strstr(str, "+CWJAP:");
+    if (str == NULL)
+    {
+        return false;
+    }
+    if (sscanf(str, "+CWJAP:\"%63[^\"]\",\"%17[^\"]\",%d,%d", &esp_wifi_state.ssid, &esp_wifi_state.bssid, &esp_wifi_state.channel, &esp_wifi_state.rssi) != 4)
+    {
+        return true;
+    }
+    return false;
 }
 
 void DMA1_Stream6_IRQHandler(void)

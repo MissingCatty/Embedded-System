@@ -23,14 +23,17 @@ typedef struct
 {
     uint8_t state;
     char    ssid[64];
+    char    bssid[64];
+    int     channel;
+    int     rssi;
 } esp_wifi_state_t;
 
 void         esp_at_init(void);
 void         esp_wifi_init(void);
-void         esp_wifi_query_state(esp_wifi_state_t *state);
+bool         esp_wifi_connected(void);
+bool         esp_at_wifi_connect(const char ssid[], const char pwd[]);
 esp_at_ack_t esp_at_send_cmd(const char cmd[], uint16_t timeout);
 
 extern esp_wifi_state_t esp_wifi_state;
-
 
 #endif
