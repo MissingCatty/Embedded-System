@@ -44,7 +44,7 @@
 ./src/misc/cache/*.c
 ./src/misc/cache/instance/*.c
 ./src/misc/cache/class/*.c
-./src/osal/cache/lv_os.c + lv_freertos.c + lv_os_none.c
+./src/osal/lv_os.c + lv_freertos.c + lv_os_none.c
 ./src/stdlib/*.c
 ./src/stdlib/builtin/*.c
 ./src/stdlib/clib/*.c
@@ -118,6 +118,10 @@
 #define LV_USE_FLEX 0
 #define LV_USE_GRID 0
 ```
+
+## 1.5 文件树添加.h文件
+
+把
 
 # 2. 驱动编写
 

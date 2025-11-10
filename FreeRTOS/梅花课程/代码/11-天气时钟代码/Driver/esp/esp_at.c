@@ -9,6 +9,8 @@
 // USART2_RX: PA3
 // USART2_TX: PA2
 
+#define esp_time_t         rtc_date_time_t
+
 #define ARRAY_SIZE(arr)    (sizeof(arr) / sizeof((arr)[0]))
 
 #define ESP_RX_BUFFER_SIZE 4096
@@ -20,10 +22,14 @@ static SemaphoreHandle_t xEspUartRxSemaphore;
 
 esp_at_ack_t esp_at_ack;
 
-uint8_t  ack_info_buffer[256];                // 信息接收缓冲区
+uint8_t  ack_info_buffer[1024];               // 信息接收缓冲区
 uint8_t *p_ack_info_buffer = ack_info_buffer; // 接收缓冲区起始指针
 
 esp_wifi_state_t esp_wifi_state;
+
+esp_weather_info_t weather_info;
+
+esp_time_t esp_sntp_time;
 
 esp_at_ack_match_t esp_at_ack_match_table[] = {
     {ESP_AT_ACK_OK, "OK\r\n"},
@@ -181,7 +187,6 @@ bool esp_at_wifi_connect(const char ssid[], const char pwd[])
 {
     char cmd[128];
     sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, pwd);
-    printf("%s", cmd);
     if (esp_at_send_cmd(cmd, 20000) == ESP_AT_ACK_OK)
     {
         esp_at_send_cmd("AT+CWJAP?\r\n", 2000);
@@ -205,6 +210,176 @@ bool _esp_parse_wifi_cwjap(char *str)
     return false;
 }
 
+bool _esp_parse_weather_info(char *response)
+{
+    response = strstr(response, "\"results\":");
+    if (!response)
+    {
+        return false; // 根result找不到
+    }
+
+    char *location_response = strstr(response, "\"location\":");
+    if (!location_response)
+    {
+        return false; // location域找不到
+    }
+
+    char *name_response = strstr(location_response, "\"name\":");
+    if (name_response)
+    {
+        sscanf(name_response, "\"name\":\"%32[^\"]\"", weather_info.city);
+    }
+
+    char *now_response = strstr(location_response, "\"now\":");
+    if (!now_response)
+    {
+        return false; // now域找不到
+    }
+
+    char *now_text_response = strstr(now_response, "\"text\":");
+    if (now_text_response)
+    {
+        sscanf(now_text_response, "\"text\":\"%32[^\"]\"", weather_info.weather);
+    }
+
+    char *now_code_response = strstr(now_response, "\"code\":");
+    if (now_code_response)
+    {
+        sscanf(now_code_response, "\"code\":\"%d\"", &weather_info.weather_code);
+    }
+
+    char *now_temperature_response = strstr(now_response, "\"temperature\":");
+    if (now_temperature_response)
+    {
+        sscanf(now_temperature_response, "\"temperature\":\"%f\"", &weather_info.temperature);
+    }
+
+    return true;
+}
+
+bool esp_send_weather_request(char key[], char location[], uint16_t timeout)
+{
+    char request[256], url[256];
+    sprintf(url, "https://api.seniverse.com/v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c", key, location);
+    sprintf(request, "AT+HTTPCLIENT=2,1,\"%s\",,,2\r\n", url);
+    if (esp_at_send_cmd(request, timeout) == ESP_AT_ACK_OK)
+    {
+        // 解析返回信息
+        if (!_esp_parse_weather_info((char *)ack_info_buffer))
+        {
+            printf("weather parse error.\n");
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool esp_sntp_init(void)
+{
+    if (esp_at_send_cmd("AT+CIPSNTPCFG=1,8\r\n", 2000) == ESP_AT_ACK_OK)
+    {
+        return true;
+    }
+    return false;
+}
+
+void _convert_weekday_from_str_to_num(char weekday[])
+{
+    if (!strcmp(weekday, "Mon"))
+    {
+        esp_sntp_time.weekday = 1;
+    } else if (!strcmp(weekday, "Tue"))
+    {
+        esp_sntp_time.weekday = 2;
+    } else if (!strcmp(weekday, "Wed"))
+    {
+        esp_sntp_time.weekday = 3;
+    } else if (!strcmp(weekday, "Thu"))
+    {
+        esp_sntp_time.weekday = 4;
+    } else if (!strcmp(weekday, "Fri"))
+    {
+        esp_sntp_time.weekday = 5;
+    } else if (!strcmp(weekday, "Sat"))
+    {
+        esp_sntp_time.weekday = 6;
+    } else if (!strcmp(weekday, "Sun"))
+    {
+        esp_sntp_time.weekday = 7;
+    }
+}
+
+void _convert_month_from_str_to_num(char month[])
+{
+    if (!strcmp(month, "Jan"))
+    {
+        esp_sntp_time.month = 1;
+    } else if (!strcmp(month, "Feb"))
+    {
+        esp_sntp_time.month = 2;
+    } else if (!strcmp(month, "Mar"))
+    {
+        esp_sntp_time.month = 3;
+    } else if (!strcmp(month, "Apr"))
+    {
+        esp_sntp_time.month = 4;
+    } else if (!strcmp(month, "May"))
+    {
+        esp_sntp_time.month = 5;
+    } else if (!strcmp(month, "Jun"))
+    {
+        esp_sntp_time.month = 6;
+    } else if (!strcmp(month, "Jul"))
+    {
+        esp_sntp_time.month = 7;
+    } else if (!strcmp(month, "Aug"))
+    {
+        esp_sntp_time.month = 8;
+    } else if (!strcmp(month, "Sep"))
+    {
+        esp_sntp_time.month = 9;
+    } else if (!strcmp(month, "Oct"))
+    {
+        esp_sntp_time.month = 10;
+    } else if (!strcmp(month, "Nov"))
+    {
+        esp_sntp_time.month = 11;
+    } else if (!strcmp(month, "Dec"))
+    {
+        esp_sntp_time.month = 12;
+    }
+}
+
+// +CIPSNTPTIME:Tue Oct 19 17:47:56 2021
+bool _parse_sntp_time(char *response)
+{
+    response = strstr(response, "+CIPSNTPTIME:");
+    if (response)
+    {
+        char weekday[4] = {0}, month[4] = {0};
+        sscanf(response, "+CIPSNTPTIME:%3s %3s %hhu %hhu:%hhu:%hhu %hu", weekday, month, &esp_sntp_time.day, &esp_sntp_time.hour, &esp_sntp_time.minute, &esp_sntp_time.second, &esp_sntp_time.year);
+        _convert_weekday_from_str_to_num(weekday);
+        _convert_month_from_str_to_num(month);
+        return true;
+    }
+    return false;
+}
+
+bool esp_sntp_sync(void)
+{
+    if (esp_at_send_cmd("AT+CIPSNTPTIME?\r\n", 2000) == ESP_AT_ACK_OK)
+    {
+        _parse_sntp_time((char *)ack_info_buffer);
+        rtc_set_time(&esp_sntp_time);
+        return true;
+    }
+    return false;
+}
+
+// SWsbqmqZpeqLrKapw
+// https://api.seniverse.com/v3/weather/now.json?key=SWsbqmqZpeqLrKapw&location=ip&language=zh-Hans&unit=c
+// {"results":[{"location":{"id":"WTSQQYHVQ973","name":"南京","country":"CN","path":"南京,南京,江苏,中国","timezone":"Asia/Shanghai","timezone_offset":"+08:00"},"now":{"text":"小雨","code":"13","temperature":"16"},"last_update":"2025-11-07T16:27:28+08:00"}]}
 void DMA1_Stream6_IRQHandler(void)
 {
     if (DMA_GetITStatus(DMA1_Stream6, DMA_IT_TCIF6) != RESET)
@@ -230,7 +405,7 @@ void USART2_IRQHandler(void)
         // ack接收完毕，按行处理缓冲区的内容
         if (!rb8_empty(esp_rb))
         {
-            uint8_t i = 0;
+            uint16_t i = 0;
             while (!rb8_empty(esp_rb) && i < sizeof(ack_info_buffer))
             {
                 rb8_get(esp_rb, p_ack_info_buffer + i);

@@ -28,11 +28,21 @@ typedef struct
     int     rssi;
 } esp_wifi_state_t;
 
-void         esp_at_init(void);
-void         esp_wifi_init(void);
-bool         esp_wifi_connected(void);
-bool         esp_at_wifi_connect(const char ssid[], const char pwd[]);
-esp_at_ack_t esp_at_send_cmd(const char cmd[], uint16_t timeout);
+typedef struct
+{
+    uint8_t city[32];
+    uint8_t weather[32];
+    uint8_t weather_code;
+    float   temperature;
+} esp_weather_info_t;
+
+void esp_at_init(void);
+void esp_wifi_init(void);
+bool esp_wifi_connected(void);
+bool esp_at_wifi_connect(const char ssid[], const char pwd[]);
+bool esp_send_weather_request(char key[], char location[], uint16_t timeout);
+bool esp_sntp_init(void);
+bool esp_sntp_sync(void);
 
 extern esp_wifi_state_t esp_wifi_state;
 

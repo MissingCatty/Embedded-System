@@ -12,14 +12,69 @@ virtualFolder:
       files:
         - path: APP/main.c
         - path: APP/board.c
-      folders: []
+      folders:
+        - name: override
+          files:
+            - path: APP/override/_printf.c
+          folders: []
     - name: Driver
       files:
-        - path: Driver/delay/delay.c
         - path: Driver/led/led.c
         - path: Driver/usart/usart.c
         - path: Driver/timer/timer.c
+        - path: Driver/usart/ringbuffer8.c
+        - path: Driver/dht11/dht11.c
+        - path: Driver/esp/esp_at.c
+        - path: Driver/rtc/rtc.c
+        - path: Driver/ili9341/lvgl_ili9341.c
+        - path: Driver/lcd/lcd.c
       folders: []
+    - name: Resource
+      files: []
+      folders:
+        - name: converted_img
+          files:
+            - path: Resource/converted_img/3d_60/weather_0.c
+            - path: Resource/converted_img/3d_60/weather_1.c
+            - path: Resource/converted_img/3d_60/weather_2.c
+            - path: Resource/converted_img/3d_60/weather_3.c
+            - path: Resource/converted_img/3d_60/weather_4.c
+            - path: Resource/converted_img/3d_60/weather_5.c
+            - path: Resource/converted_img/3d_60/weather_6.c
+            - path: Resource/converted_img/3d_60/weather_7.c
+            - path: Resource/converted_img/3d_60/weather_8.c
+            - path: Resource/converted_img/3d_60/weather_9.c
+            - path: Resource/converted_img/3d_60/weather_10.c
+            - path: Resource/converted_img/3d_60/weather_11.c
+            - path: Resource/converted_img/3d_60/weather_12.c
+            - path: Resource/converted_img/3d_60/weather_13.c
+            - path: Resource/converted_img/3d_60/weather_14.c
+            - path: Resource/converted_img/3d_60/weather_15.c
+            - path: Resource/converted_img/3d_60/weather_16.c
+            - path: Resource/converted_img/3d_60/weather_17.c
+            - path: Resource/converted_img/3d_60/weather_18.c
+            - path: Resource/converted_img/3d_60/weather_19.c
+            - path: Resource/converted_img/3d_60/weather_20.c
+            - path: Resource/converted_img/3d_60/weather_21.c
+            - path: Resource/converted_img/3d_60/weather_22.c
+            - path: Resource/converted_img/3d_60/weather_23.c
+            - path: Resource/converted_img/3d_60/weather_24.c
+            - path: Resource/converted_img/3d_60/weather_25.c
+            - path: Resource/converted_img/3d_60/weather_26.c
+            - path: Resource/converted_img/3d_60/weather_27.c
+            - path: Resource/converted_img/3d_60/weather_28.c
+            - path: Resource/converted_img/3d_60/weather_29.c
+            - path: Resource/converted_img/3d_60/weather_30.c
+            - path: Resource/converted_img/3d_60/weather_31.c
+            - path: Resource/converted_img/3d_60/weather_32.c
+            - path: Resource/converted_img/3d_60/weather_33.c
+            - path: Resource/converted_img/3d_60/weather_34.c
+            - path: Resource/converted_img/3d_60/weather_35.c
+            - path: Resource/converted_img/3d_60/weather_36.c
+            - path: Resource/converted_img/3d_60/weather_37.c
+            - path: Resource/converted_img/3d_60/weather_38.c
+            - path: Resource/converted_img/3d_60/weather_99.c
+          folders: []
     - name: Firmware
       files:
         - path: Firmware/CMSIS/Device/startup_stm32f40xx.s
@@ -90,10 +145,170 @@ virtualFolder:
                 - path: Lib/FreeRTOS/portable/RVDS/ARM_CM4F/port.c
                 - path: Lib/FreeRTOS/portable/MemMang/heap_4.c
               folders: []
+        - name: lvgl
+          files:
+            - path: Lib/LVGL/lv_conf.h
+            - path: Lib/LVGL/lv_version.h
+            - path: Lib/LVGL/lvgl.h
+            - path: Lib/LVGL/lvgl_private.h
+          folders:
+            - name: src
+              files:
+                - path: Lib/LVGL/src/lv_init.c
+                - path: Lib/LVGL/src/core/lv_group.c
+                - path: Lib/LVGL/src/core/lv_obj.c
+                - path: Lib/LVGL/src/core/lv_obj_class.c
+                - path: Lib/LVGL/src/core/lv_obj_draw.c
+                - path: Lib/LVGL/src/core/lv_obj_event.c
+                - path: Lib/LVGL/src/core/lv_obj_id_builtin.c
+                - path: Lib/LVGL/src/core/lv_obj_pos.c
+                - path: Lib/LVGL/src/core/lv_obj_property.c
+                - path: Lib/LVGL/src/core/lv_obj_scroll.c
+                - path: Lib/LVGL/src/core/lv_obj_style.c
+                - path: Lib/LVGL/src/core/lv_obj_style_gen.c
+                - path: Lib/LVGL/src/core/lv_obj_tree.c
+                - path: Lib/LVGL/src/core/lv_refr.c
+                - path: Lib/LVGL/src/display/lv_display.c
+                - path: Lib/LVGL/src/draw/lv_draw.c
+                - path: Lib/LVGL/src/draw/lv_draw_3d.c
+                - path: Lib/LVGL/src/draw/lv_draw_arc.c
+                - path: Lib/LVGL/src/draw/lv_draw_buf.c
+                - path: Lib/LVGL/src/draw/lv_draw_image.c
+                - path: Lib/LVGL/src/draw/lv_draw_label.c
+                - path: Lib/LVGL/src/draw/lv_draw_line.c
+                - path: Lib/LVGL/src/draw/lv_draw_mask.c
+                - path: Lib/LVGL/src/draw/lv_draw_rect.c
+                - path: Lib/LVGL/src/draw/lv_draw_triangle.c
+                - path: Lib/LVGL/src/draw/lv_draw_vector.c
+                - path: Lib/LVGL/src/draw/lv_image_decoder.c
+                - path: Lib/LVGL/src/draw/convert/lv_draw_buf_convert.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_arc.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_border.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_box_shadow.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_fill.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_grad.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_img.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_letter.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_line.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_mask.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_mask_rect.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_transform.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_triangle.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_utils.c
+                - path: Lib/LVGL/src/draw/sw/lv_draw_sw_vector.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_al88.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_argb8888.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_argb8888_premultiplied.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_i1.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_l8.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_rgb565.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_rgb565_swapped.c
+                - path: Lib/LVGL/src/draw/sw/blend/lv_draw_sw_blend_to_rgb888.c
+                - path: Lib/LVGL/src/drivers/display/ili9341/lv_ili9341.c
+                - path: Lib/LVGL/src/drivers/display/lcd/lv_lcd_generic_mipi.c
+                - path: Lib/LVGL/src/font/lv_binfont_loader.c
+                - path: Lib/LVGL/src/font/lv_font.c
+                - path: Lib/LVGL/src/font/lv_font_dejavu_16_persian_hebrew.c
+                - path: Lib/LVGL/src/font/lv_font_fmt_txt.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_8.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_10.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_12.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_14.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_14_aligned.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_16.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_18.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_20.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_22.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_24.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_26.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_28.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_28_compressed.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_30.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_32.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_34.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_36.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_38.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_40.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_42.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_44.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_46.c
+                - path: Lib/LVGL/src/font/lv_font_montserrat_48.c
+                - path: Lib/LVGL/src/font/lv_font_source_han_sans_sc_14_cjk.c
+                - path: Lib/LVGL/src/font/lv_font_source_han_sans_sc_16_cjk.c
+                - path: Lib/LVGL/src/font/lv_font_unscii_8.c
+                - path: Lib/LVGL/src/font/lv_font_unscii_16.c
+                - path: Lib/LVGL/src/indev/lv_indev.c
+                - path: Lib/LVGL/src/indev/lv_indev_gesture.c
+                - path: Lib/LVGL/src/indev/lv_indev_scroll.c
+                - path: Lib/LVGL/src/layouts/lv_layout.c
+                - path: Lib/LVGL/src/layouts/flex/lv_flex.c
+                - path: Lib/LVGL/src/layouts/grid/lv_grid.c
+                - path: Lib/LVGL/src/libs/bin_decoder/lv_bin_decoder.c
+                - path: Lib/LVGL/src/misc/lv_anim.c
+                - path: Lib/LVGL/src/misc/lv_anim_timeline.c
+                - path: Lib/LVGL/src/misc/lv_area.c
+                - path: Lib/LVGL/src/misc/lv_array.c
+                - path: Lib/LVGL/src/misc/lv_assert.c
+                - path: Lib/LVGL/src/misc/lv_async.c
+                - path: Lib/LVGL/src/misc/lv_bidi.c
+                - path: Lib/LVGL/src/misc/lv_circle_buf.c
+                - path: Lib/LVGL/src/misc/lv_color.c
+                - path: Lib/LVGL/src/misc/lv_color_op.c
+                - path: Lib/LVGL/src/misc/lv_event.c
+                - path: Lib/LVGL/src/misc/lv_fs.c
+                - path: Lib/LVGL/src/misc/lv_grad.c
+                - path: Lib/LVGL/src/misc/lv_iter.c
+                - path: Lib/LVGL/src/misc/lv_ll.c
+                - path: Lib/LVGL/src/misc/lv_log.c
+                - path: Lib/LVGL/src/misc/lv_lru.c
+                - path: Lib/LVGL/src/misc/lv_math.c
+                - path: Lib/LVGL/src/misc/lv_matrix.c
+                - path: Lib/LVGL/src/misc/lv_palette.c
+                - path: Lib/LVGL/src/misc/lv_profiler_builtin.c
+                - path: Lib/LVGL/src/misc/lv_rb.c
+                - path: Lib/LVGL/src/misc/lv_style.c
+                - path: Lib/LVGL/src/misc/lv_style_gen.c
+                - path: Lib/LVGL/src/misc/lv_templ.c
+                - path: Lib/LVGL/src/misc/lv_text.c
+                - path: Lib/LVGL/src/misc/lv_text_ap.c
+                - path: Lib/LVGL/src/misc/lv_timer.c
+                - path: Lib/LVGL/src/misc/lv_tree.c
+                - path: Lib/LVGL/src/misc/lv_utils.c
+                - path: Lib/LVGL/src/misc/cache/lv_cache.c
+                - path: Lib/LVGL/src/misc/cache/lv_cache_entry.c
+                - path: Lib/LVGL/src/misc/cache/instance/lv_image_cache.c
+                - path: Lib/LVGL/src/misc/cache/instance/lv_image_header_cache.c
+                - path: Lib/LVGL/src/misc/cache/class/lv_cache_lru_ll.c
+                - path: Lib/LVGL/src/misc/cache/class/lv_cache_lru_rb.c
+                - path: Lib/LVGL/src/misc/cache/class/lv_cache_sc_da.c
+                - path: Lib/LVGL/src/osal/lv_freertos.c
+                - path: Lib/LVGL/src/osal/lv_os.c
+                - path: Lib/LVGL/src/osal/lv_os_none.c
+                - path: Lib/LVGL/src/stdlib/lv_mem.c
+                - path: Lib/LVGL/src/stdlib/builtin/lv_mem_core_builtin.c
+                - path: Lib/LVGL/src/stdlib/builtin/lv_sprintf_builtin.c
+                - path: Lib/LVGL/src/stdlib/builtin/lv_string_builtin.c
+                - path: Lib/LVGL/src/stdlib/builtin/lv_tlsf.c
+                - path: Lib/LVGL/src/stdlib/clib/lv_mem_core_clib.c
+                - path: Lib/LVGL/src/stdlib/clib/lv_sprintf_clib.c
+                - path: Lib/LVGL/src/stdlib/clib/lv_string_clib.c
+                - path: Lib/LVGL/src/themes/lv_theme.c
+                - path: Lib/LVGL/src/themes/default/lv_theme_default.c
+                - path: Lib/LVGL/src/themes/mono/lv_theme_mono.c
+                - path: Lib/LVGL/src/themes/simple/lv_theme_simple.c
+                - path: Lib/LVGL/src/tick/lv_tick.c
+                - path: Lib/LVGL/src/others/observer/lv_observer.c
+              folders: []
+            - name: widgets
+              files:
+                - path: Lib/LVGL/src/widgets/label/lv_label.c
+              folders: []
 dependenceList: []
 outDir: build
 miscInfo:
-  uid: a65bb3e043a1027f82ed0fc01dc35251
+  uid: e84f3aabadd1a513885a6554023cc45a
 targets:
   Target_1:
     cppPreprocessAttrs:
@@ -101,8 +316,9 @@ targets:
         - STM32F40_41xxx
         - USE_STDPERIPH_DRIVER
         - HSE_VALUE=8000000
+        - LV_CONF_INCLUDE_SIMPLE
+        - LV_LVGL_H_INCLUDE_SIMPLE
       incList:
-        - Driver/inc
         - Firmware/CMSIS/Core
         - Firmware/CMSIS/Device
         - Firmware/Driver/inc
@@ -110,6 +326,8 @@ targets:
         - Driver
         - Lib/FreeRTOS/include
         - Lib/FreeRTOS/portable/RVDS/ARM_CM4F
+        - Lib/LVGL
+        - Lib/LVGL/src
         - .cmsis/include
         - RTE/_Target_1
       libList: []
