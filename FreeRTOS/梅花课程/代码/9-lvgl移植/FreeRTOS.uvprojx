@@ -389,11 +389,6 @@
               <FileType>1</FileType>
               <FilePath>.\APP\main.c</FilePath>
             </File>
-            <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\APP\board.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -413,11 +408,6 @@
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Driver\usart\usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Driver\timer\timer.c</FilePath>
             </File>
             <File>
               <FileName>lvgl_ili9341.c</FileName>
@@ -723,6 +713,28 @@
         </Group>
         <Group>
           <GroupName>Lib/lvgl</GroupName>
+          <Files>
+            <File>
+              <FileName>lv_conf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Lib\lvgl\lv_conf.h</FilePath>
+            </File>
+            <File>
+              <FileName>lv_version.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Lib\lvgl\lv_version.h</FilePath>
+            </File>
+            <File>
+              <FileName>lvgl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Lib\lvgl\lvgl.h</FilePath>
+            </File>
+            <File>
+              <FileName>lvgl_private.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Lib\lvgl\lvgl_private.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Lib/lvgl/src</GroupName>

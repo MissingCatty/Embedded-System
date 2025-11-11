@@ -394,6 +394,11 @@
               <FileType>1</FileType>
               <FilePath>.\APP\board.c</FilePath>
             </File>
+            <File>
+              <FileName>gui.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\APP\tasks\gui.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -460,9 +465,54 @@
           <GroupName>Resource/converted_img</GroupName>
           <Files>
             <File>
-              <FileName>weather_0.c</FileName>
+              <FileName>wifi_on.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Resource\converted_img\3d_60\weather_0.c</FilePath>
+              <FilePath>.\Resource\converted_img\3d_60\wifi_on.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi_off.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\wifi_off.c</FilePath>
+            </File>
+            <File>
+              <FileName>thermometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\thermometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_cloud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_cloud.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_na.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_na.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_nosun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_nosun.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_rain.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_rain.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_snow.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_snow.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_sun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_sun.c</FilePath>
+            </File>
+            <File>
+              <FileName>weather_thounderrain.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Resource\converted_img\3d_60\weather_thounderrain.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1501,6 +1551,21 @@
               <FileName>lv_label.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Lib\LVGL\src\widgets\label\lv_label.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_arc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Lib\LVGL\src\widgets\arc\lv_arc.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_arclabel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Lib\LVGL\src\widgets\arclabel\lv_arclabel.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_image.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Lib\LVGL\src\widgets\image\lv_image.c</FilePath>
             </File>
           </Files>
         </Group>

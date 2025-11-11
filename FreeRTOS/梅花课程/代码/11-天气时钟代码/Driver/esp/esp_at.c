@@ -13,7 +13,7 @@
 
 #define ARRAY_SIZE(arr)    (sizeof(arr) / sizeof((arr)[0]))
 
-#define ESP_RX_BUFFER_SIZE 4096
+#define ESP_RX_BUFFER_SIZE 1 * 1024
 uint8_t       esp_rx_buffer[ESP_RX_BUFFER_SIZE];
 ringbuffer8_t esp_rb;
 
@@ -127,13 +127,27 @@ esp_at_ack_t esp_match_from_ack(const char *ack)
 
 void esp_at_send(const char str[])
 {
-    uint32_t len       = strlen(str);
+    uint32_t len = strlen(str);
+
+    // 先禁用DMA，确保配置时DMA处于停止状态
+    DMA_Cmd(DMA1_Stream6, DISABLE);
+
+    // 等待DMA真正禁用（关键：避免配置冲突）
+    while (DMA_GetCmdStatus(DMA1_Stream6) != DISABLE);
+
+    // 配置DMA传输参数
     DMA1_Stream6->M0AR = (uint32_t)str;
     DMA1_Stream6->NDTR = len;
 
+    // 清除传输完成标志
     DMA_ClearFlag(DMA1_Stream6, DMA_FLAG_TCIF6);
+
+    // 使能DMA开始传输
     DMA_Cmd(DMA1_Stream6, ENABLE);
+
+    // 等待DMA传输完成（通过中断释放信号量）
     xSemaphoreTake(xEspUartTxSemaphore, portMAX_DELAY);
+
     USART_ClearFlag(USART2, USART_FLAG_TC);
 }
 

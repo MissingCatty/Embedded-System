@@ -11,6 +11,7 @@
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\FreeRTOS\\include",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\FreeRTOS\\portable\\RVDS\\ARM_CM4F",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL",
+                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\APP\\tasks",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\APP\\override",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Driver\\led",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Driver\\usart",
@@ -53,7 +54,10 @@
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\themes\\simple",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\tick",
                 "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\others\\observer",
-                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\widgets\\label"
+                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\widgets\\label",
+                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\widgets\\arc",
+                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\widgets\\arclabel",
+                "d:\\Repository\\embedding-system-noob\\FreeRTOS\\梅花课程\\代码\\11-天气时钟代码\\Lib\\LVGL\\src\\widgets\\image"
             ],
             "defines": [
                 "STM32F40_41xxx",

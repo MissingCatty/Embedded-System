@@ -20,7 +20,7 @@ int main(void)
 {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     usart_init(115200);
-    delay_init();
+    timer_init();
 
     LCD_Init();
 

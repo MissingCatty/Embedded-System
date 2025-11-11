@@ -3,6 +3,9 @@
 #include "font.h"
 #include "driver.h"
 
+#define delay_ms timer_delay_ms
+#define delay_us timer_delay_us
+
 // LCD的画笔颜色和背景色
 u16 POINT_COLOR = 0x0000; // 画笔颜色
 u16 BACK_COLOR  = 0xFFFF; // 背景色
