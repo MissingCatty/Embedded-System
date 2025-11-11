@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "lvgl.h"
+#include "my_tasks.h"
 
 #define START_TASK_PRIO 4                    // 任务优先级
 #define START_STK_SIZE  50                   // 任务堆栈大小
@@ -15,8 +16,6 @@ void         start_task(void *pvParameters); // 任务函数
 #define USART_STK_SIZE  1024          // 任务堆栈大小
 TaskHandle_t USARTTask_Handler;       // 任务句柄
 void         usart_task(void *p_arg); // 任务函数
-
-extern void gui_task_create(void);
 
 int main(void)
 {
@@ -47,7 +46,7 @@ void start_task(void *pvParameters)
         (UBaseType_t)USART_TASK_PRIO,
         (TaskHandle_t *)&USARTTask_Handler
     );
-    gui_task_create();
+    foreground_task_create();
     vTaskDelete(StartTask_Handler); // 删除开始任务
 }
 
@@ -93,15 +92,6 @@ void usart_task(void *p_arg)
 
     while (1)
     {
-        // if (xSemaphoreTake(xUsartRxSemaphore, portMAX_DELAY) == pdTRUE)
-        // {
-        //     if (!rb8_empty(rb))
-        //     {
-        //         uint32_t actual_size = rb8_actual_size(rb);
-        //         rb8_gets(rb, data, actual_size);
-        //         data[actual_size] = '\0';
-        //         usart_send((char *)data);
-        //     }
-        // }
+
     }
 }

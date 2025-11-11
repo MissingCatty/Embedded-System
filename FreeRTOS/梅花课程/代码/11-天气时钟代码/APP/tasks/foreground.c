@@ -1,12 +1,14 @@
 #include "lvgl.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "driver.h"
+#include "my_tasks.h"
 
 // 创建LVGL任务GUI_TASK
 #define GUI_TASK_PRIO 2             // 任务优先级
 #define GUI_STK_SIZE  1024          // 任务堆栈大小
 TaskHandle_t GUI_Task_Handler;      // 任务句柄
-void         gui_task(void *p_arg); // 任务函数
+void         foreground_task(void *p_arg); // 任务函数
 
 /**
  * @brief   在屏幕上绘制一个可指定圆角的实心矩形
@@ -19,7 +21,7 @@ void         gui_task(void *p_arg); // 任务函数
  * @param   radius  圆角半径 (0 = 锐角, LV_RADIUS_CIRCLE = 圆形/胶囊形)
  * @return  lv_obj_t* 返回创建的矩形对象指针
  */
-lv_obj_t *gui_draw_rectangle_radius(lv_obj_t *parent, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color, int16_t radius)
+lv_obj_t *foreground_draw_rectangle_radius(lv_obj_t *parent, uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint32_t color, int16_t radius)
 {
     /* 1. 创建一个基础对象 (lv_obj) */
     lv_obj_t *rect = lv_obj_create(parent ? parent : lv_scr_act());
@@ -55,7 +57,7 @@ lv_obj_t *gui_draw_rectangle_radius(lv_obj_t *parent, uint16_t x, uint16_t y, ui
  * @param   align   对齐方式 (0: 使用绝对位置, LV_ALIGN_CENTER: 居中, LV_ALIGN_TOP_MID: 顶部居中等)
  * @return  lv_obj_t* 返回创建的标签对象指针
  */
-lv_obj_t *gui_create_label(lv_obj_t *parent, const char *text, int16_t x, int16_t y, uint32_t color, const lv_font_t *font, lv_align_t align)
+lv_obj_t *foreground_create_label(lv_obj_t *parent, const char *text, int16_t x, int16_t y, uint32_t color, const lv_font_t *font, lv_align_t align)
 {
     /* 1. 创建标签对象 */
     lv_obj_t *label = lv_label_create(parent ? parent : lv_scr_act());
@@ -96,7 +98,7 @@ lv_obj_t *gui_create_label(lv_obj_t *parent, const char *text, int16_t x, int16_
  * @param   height  图片高度 (0 表示使用原始高度)
  * @return  lv_obj_t* 返回创建的图片对象指针
  */
-lv_obj_t *gui_create_image(lv_obj_t *parent, const void *img_src, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+lv_obj_t *foreground_create_image(lv_obj_t *parent, const void *img_src, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 {
     /* 1. 创建图片对象 */
     lv_obj_t *img = lv_image_create(parent ? parent : lv_scr_act());
@@ -121,7 +123,7 @@ LV_IMG_DECLARE(wifi_on);
 LV_IMG_DECLARE(wifi_off);
 LV_IMG_DECLARE(thermometer);
 
-void gui_task(void *p_arg)
+void foreground_task(void *p_arg)
 {
     // LCD硬件初始化(必须在lvgl初始化之前)
     LCD_Init();
@@ -129,31 +131,31 @@ void gui_task(void *p_arg)
     // lvgl驱动初始化
     lvgl_ili9341_init(); // 初始化lvgl
 
-    lv_obj_t *grey   = gui_draw_rectangle_radius(NULL, 10, 10, 220, 150, 0xA9A9A9, 6);
-    lv_obj_t *blue   = gui_draw_rectangle_radius(NULL, 10, 170, 105, 140, 0x007BFF, 6);
-    lv_obj_t *yellow = gui_draw_rectangle_radius(NULL, 125, 170, 105, 140, 0xFFA500, 6);
+    lv_obj_t *grey   = foreground_draw_rectangle_radius(NULL, 10, 10, 220, 150, 0xA9A9A9, 6);
+    lv_obj_t *blue   = foreground_draw_rectangle_radius(NULL, 10, 170, 105, 140, 0x007BFF, 6);
+    lv_obj_t *yellow = foreground_draw_rectangle_radius(NULL, 125, 170, 105, 140, 0xFFA500, 6);
 
-    lv_obj_t *time_hour   = gui_create_label(grey, "14", 40, 46, 0x000000, &lv_font_montserrat_48, 0);
-    lv_obj_t *time_split  = gui_create_label(grey, ":", 100, 46, 0x000000, &lv_font_montserrat_48, 0);
-    lv_obj_t *time_min    = gui_create_label(grey, "05", 120, 46, 0x000000, &lv_font_montserrat_48, 0);
-    lv_obj_t *date        = gui_create_label(grey, "2025/11/11  Tuesday", 40, 120, 0x000000, &lv_font_montserrat_14, 0);
-    lv_obj_t *wifi_state  = gui_create_image(grey, &wifi_off, 5, 5, 0, 0);
-    lv_obj_t *wifi_device = gui_create_label(grey, "[Honor Magic6]", 80, 5, 0x000000, &lv_font_montserrat_14, 0);
+    lv_obj_t *time_hour   = foreground_create_label(grey, "14", 40, 46, 0x000000, &lv_font_montserrat_48, 0);
+    lv_obj_t *time_split  = foreground_create_label(grey, ":", 100, 46, 0x000000, &lv_font_montserrat_48, 0);
+    lv_obj_t *time_min    = foreground_create_label(grey, "05", 120, 46, 0x000000, &lv_font_montserrat_48, 0);
+    lv_obj_t *date        = foreground_create_label(grey, "2025/11/11  Tuesday", 40, 120, 0x000000, &lv_font_montserrat_14, 0);
+    lv_obj_t *wifi_state  = foreground_create_image(grey, &wifi_off, 5, 5, 0, 0);
+    lv_obj_t *wifi_device = foreground_create_label(grey, "[Honor Magic6]", 80, 5, 0x000000, &lv_font_montserrat_14, 0);
 
-    lv_obj_t *inner_env_title_bg = gui_draw_rectangle_radius(blue, 5, 5, 95, 20, 0xD4F2E7, 6);
-    lv_obj_t *inner_env_title    = gui_create_label(inner_env_title_bg, "Inner", 0, 2, 0x000000, &lv_font_montserrat_14, LV_ALIGN_TOP_MID);
-    lv_obj_t *temp_val           = gui_create_label(blue, "24", 30, 40, 0x000000, &lv_font_montserrat_40, 0);
-    lv_obj_t *temp_unit          = gui_create_label(blue, "°C", 75, 30, 0x000000, &lv_font_montserrat_22, 0);
-    lv_obj_t *humid_val          = gui_create_label(blue, "78", 0, -5, 0x000000, &lv_font_montserrat_40, LV_ALIGN_BOTTOM_MID);
-    lv_obj_t *humid_unit         = gui_create_label(blue, "%", 35, -10, 0x000000, &lv_font_montserrat_22, LV_ALIGN_BOTTOM_MID);
+    lv_obj_t *inner_env_title_bg = foreground_draw_rectangle_radius(blue, 5, 5, 95, 20, 0xD4F2E7, 6);
+    lv_obj_t *inner_env_title    = foreground_create_label(inner_env_title_bg, "Inner", 0, 2, 0x000000, &lv_font_montserrat_14, LV_ALIGN_TOP_MID);
+    lv_obj_t *temp_val           = foreground_create_label(blue, "24", 30, 40, 0x000000, &lv_font_montserrat_40, 0);
+    lv_obj_t *temp_unit          = foreground_create_label(blue, "°C", 75, 30, 0x000000, &lv_font_montserrat_22, 0);
+    lv_obj_t *humid_val          = foreground_create_label(blue, "78", 0, -5, 0x000000, &lv_font_montserrat_40, LV_ALIGN_BOTTOM_MID);
+    lv_obj_t *humid_unit         = foreground_create_label(blue, "%", 35, -10, 0x000000, &lv_font_montserrat_22, LV_ALIGN_BOTTOM_MID);
 
-    lv_obj_t *city_bg        = gui_draw_rectangle_radius(yellow, 5, 5, 95, 20, 0xFFE4B5, 6);
-    lv_obj_t *city           = gui_create_label(city_bg, "NanJing", 0, 2, 0x000000, &lv_font_montserrat_14, LV_ALIGN_TOP_MID);
-    lv_obj_t *city_temp      = gui_create_label(yellow, "25", 0, 30, 0x000000, &lv_font_montserrat_40, LV_ALIGN_TOP_MID);
-    lv_obj_t *city_temp_unit = gui_create_label(yellow, "°C", 35, 25, 0x000000, &lv_font_montserrat_22, LV_ALIGN_TOP_MID);
+    lv_obj_t *city_bg        = foreground_draw_rectangle_radius(yellow, 5, 5, 95, 20, 0xFFE4B5, 6);
+    lv_obj_t *city           = foreground_create_label(city_bg, "NanJing", 0, 2, 0x000000, &lv_font_montserrat_14, LV_ALIGN_TOP_MID);
+    lv_obj_t *city_temp      = foreground_create_label(yellow, "25", 0, 30, 0x000000, &lv_font_montserrat_40, LV_ALIGN_TOP_MID);
+    lv_obj_t *city_temp_unit = foreground_create_label(yellow, "°C", 35, 25, 0x000000, &lv_font_montserrat_22, LV_ALIGN_TOP_MID);
 
-    lv_obj_t *city_weather      = gui_create_image(yellow, &thermometer, 2, 75, 0, 0);
-    lv_obj_t *city_weather_logo = gui_create_image(yellow, &weather_sun, 43, 75, 0, 0);
+    lv_obj_t *city_weather      = foreground_create_image(yellow, &thermometer, 2, 75, 0, 0);
+    lv_obj_t *city_weather_logo = foreground_create_image(yellow, &weather_sun, 43, 75, 0, 0);
     LV_FONT_MONTSERRAT_16;
     lv_timer_handler();
 
@@ -163,11 +165,11 @@ void gui_task(void *p_arg)
     }
 }
 
-void gui_task_create(void)
+void foreground_task_create(void)
 {
     xTaskCreate(
-        (TaskFunction_t)gui_task,         // 任务函数
-        (const char *)"gui_task",         // 任务名称
+        (TaskFunction_t)foreground_task,         // 任务函数
+        (const char *)"foreground_task",         // 任务名称
         (uint16_t)GUI_STK_SIZE,           // 任务堆栈大小
         (void *)NULL,                     // 传递给任务函数的参数
         (UBaseType_t)GUI_TASK_PRIO,       // 任务优先级

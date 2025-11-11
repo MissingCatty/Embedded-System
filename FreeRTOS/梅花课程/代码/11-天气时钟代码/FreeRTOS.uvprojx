@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,HSE_VALUE=8000000,LV_CONF_INCLUDE_SIMPLE,LV_LVGL_H_INCLUDE_SIMPLE</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Firmware\CMSIS\Core;.\Firmware\CMSIS\Device;.\Firmware\Driver\inc;.\APP;.\Driver;.\Lib\FreeRTOS\include;.\Lib\FreeRTOS\portable\RVDS\ARM_CM4F;.\Lib\LVGL</IncludePath>
+              <IncludePath>.\Firmware\CMSIS\Core;.\Firmware\CMSIS\Device;.\Firmware\Driver\inc;.\APP;.\Driver;.\Lib\FreeRTOS\include;.\Lib\FreeRTOS\portable\RVDS\ARM_CM4F;.\Lib\LVGL;.\APP\tasks</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -390,14 +390,14 @@
               <FilePath>.\APP\main.c</FilePath>
             </File>
             <File>
-              <FileName>board.c</FileName>
+              <FileName>foreground.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\board.c</FilePath>
+              <FilePath>.\APP\tasks\foreground.c</FilePath>
             </File>
             <File>
-              <FileName>gui.c</FileName>
+              <FileName>background.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\APP\tasks\gui.c</FilePath>
+              <FilePath>.\APP\tasks\background.c</FilePath>
             </File>
           </Files>
         </Group>
