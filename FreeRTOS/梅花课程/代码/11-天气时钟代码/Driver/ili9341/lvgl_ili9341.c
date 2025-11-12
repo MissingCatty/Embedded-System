@@ -7,7 +7,7 @@
 // lvgl官方推荐的屏幕刷新的缓冲区最小大小为屏幕大小*颜色深度/10
 // 较小的缓冲区：(例如 /10 或 /20)更节省 RAM，但需要更频繁地向屏幕发送数据，可能会降低复杂动画的流畅度或导致画面撕裂。
 // 较大的缓冲区： (例如 /4 或 /2)使用更多 RAM，但由于每次发送的数据块更大、次数更少，通常渲染效果会更平滑。
-#define DISP_BUF_SIZE (DISP_HOR_RES * DISP_VER_RES * sizeof(lv_color_t) / 20)
+#define DISP_BUF_SIZE (DISP_HOR_RES * DISP_VER_RES * sizeof(lv_color_t) / 12)
 
 static lv_color_t    gui_buff[DISP_BUF_SIZE];
 static lv_display_t *ili9341_display;

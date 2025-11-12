@@ -143,28 +143,3 @@ uint8_t dht11_receive_data(void)
 
     return 0; // 接收数据成功
 }
-
-void dht11_task(void *p_arg)
-{
-    dht11_init();
-
-    while (1)
-    {
-        dht11_receive_data();
-        printf("Humid: %d.%d\n", dht11_humid_integer, dht11_humid_decimal);
-        printf("Temp: %d.%d\n", dht11_temp_integer, dht11_temp_decimal);
-        timer_delay_ms(1000);
-    }
-}
-
-void dht11_task_create(void)
-{
-    xTaskCreate(
-        (TaskFunction_t)dht11_task,
-        (const char *)"dht11_task",
-        (uint16_t)DHT11_STK_SIZE,
-        (void *)NULL,
-        (UBaseType_t)DHT11_TASK_PRIO,
-        (TaskHandle_t *)&DHT11Task_Handler
-    );
-}

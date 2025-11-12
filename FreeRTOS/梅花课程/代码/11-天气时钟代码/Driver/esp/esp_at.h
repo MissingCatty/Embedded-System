@@ -37,7 +37,7 @@ typedef struct
 } esp_weather_info_t;
 
 void esp_at_init(void);
-void esp_wifi_init(void);
+bool esp_wifi_init(void);
 bool esp_wifi_connected(void);
 bool esp_at_wifi_connect(const char ssid[], const char pwd[]);
 bool esp_send_weather_request(char key[], char location[], uint16_t timeout);
@@ -45,5 +45,6 @@ bool esp_sntp_init(void);
 bool esp_sntp_sync(void);
 
 extern esp_wifi_state_t esp_wifi_state;
+extern esp_weather_info_t weather_info;
 
 #endif

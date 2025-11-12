@@ -158,16 +158,14 @@ esp_at_ack_t esp_at_send_cmd(const char cmd[], uint16_t timeout)
 
     if (xSemaphoreTake(xEspUartRxSemaphore, pdMS_TO_TICKS(timeout)) == pdTRUE)
     {
-        printf("%d", (uint8_t)esp_at_ack);
         return esp_at_ack;
     }
-    printf("0");
     return ESP_AT_ACK_NONE;
 }
 
-void esp_wifi_init(void)
+bool esp_wifi_init(void)
 {
-    esp_at_send_cmd("AT+CWMODE=1\r\n", 2000);
+    return esp_at_send_cmd("AT+CWMODE=1\r\n", 2000) == ESP_AT_ACK_OK;
 }
 
 bool _esp_parse_wifi_cwstate(char *str)
@@ -201,7 +199,7 @@ bool esp_at_wifi_connect(const char ssid[], const char pwd[])
 {
     char cmd[128];
     sprintf(cmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, pwd);
-    if (esp_at_send_cmd(cmd, 20000) == ESP_AT_ACK_OK)
+    if (esp_at_send_cmd(cmd, 2000) == ESP_AT_ACK_OK)
     {
         esp_at_send_cmd("AT+CWJAP?\r\n", 2000);
         _esp_parse_wifi_cwjap((char *)ack_info_buffer);
@@ -274,7 +272,7 @@ bool _esp_parse_weather_info(char *response)
 bool esp_send_weather_request(char key[], char location[], uint16_t timeout)
 {
     char request[256], url[256];
-    sprintf(url, "https://api.seniverse.com/v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c", key, location);
+    sprintf(url, "https://api.seniverse.com/v3/weather/now.json?key=%s&location=%s&language=en&unit=c", key, location);
     sprintf(request, "AT+HTTPCLIENT=2,1,\"%s\",,,2\r\n", url);
     if (esp_at_send_cmd(request, timeout) == ESP_AT_ACK_OK)
     {
@@ -392,7 +390,7 @@ bool esp_sntp_sync(void)
 }
 
 // SWsbqmqZpeqLrKapw
-// https://api.seniverse.com/v3/weather/now.json?key=SWsbqmqZpeqLrKapw&location=ip&language=zh-Hans&unit=c
+// https://api.seniverse.com/v3/weather/now.json?key=SWsbqmqZpeqLrKapw&location=ip&language=en&unit=c
 // {"results":[{"location":{"id":"WTSQQYHVQ973","name":"南京","country":"CN","path":"南京,南京,江苏,中国","timezone":"Asia/Shanghai","timezone_offset":"+08:00"},"now":{"text":"小雨","code":"13","temperature":"16"},"last_update":"2025-11-07T16:27:28+08:00"}]}
 void DMA1_Stream6_IRQHandler(void)
 {

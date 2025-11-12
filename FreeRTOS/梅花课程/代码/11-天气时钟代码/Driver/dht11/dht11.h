@@ -10,6 +10,5 @@ extern uint8_t dht11_temp_decimal;
 
 void    dht11_init(void);
 uint8_t dht11_receive_data(void);
-void    dht11_task_create(void);
 
 #endif
