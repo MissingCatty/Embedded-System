@@ -120,6 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
+          <Name>&lt;驩</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -158,7 +159,7 @@
           <Type>0</Type>
           <LineNumber>22</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134381662</Address>
+          <Address>134381666</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -172,25 +173,9 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>11</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134281918</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Repository\embedding-system-noob\FreeRTOS\姊呰姳璇剧▼\浠ｇ爜\11-澶╂皵鏃堕挓浠ｇ爜\APP\jobs.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\FreeRTOS\APP/jobs.c\11</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
           <LineNumber>146</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134270290</Address>
+          <Address>134270294</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -202,20 +187,20 @@
           <Expression>\\FreeRTOS\APP/tasks/foreground.c\146</Expression>
         </Bp>
         <Bp>
-          <Number>3</Number>
+          <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>176</LineNumber>
+          <LineNumber>34</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134281570</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>.\APP\tasks\foreground.c</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Repository\embedding-system-noob\FreeRTOS\姊呰姳璇剧▼\浠ｇ爜\11-澶╂皵鏃堕挓浠ｇ爜\APP\jobs.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\FreeRTOS\APP/jobs.c\34</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

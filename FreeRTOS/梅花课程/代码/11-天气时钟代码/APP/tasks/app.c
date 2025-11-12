@@ -44,7 +44,8 @@ void timer_immediate_callback(TimerHandle_t xTimer)
 
 void app_start(void)
 {
-    background_queue_put(wrapper, esp_wifi_init); // 首先初始化wifi
+    background_queue_put(wrapper, esp_sntp_init); // 初始化sntp
+    background_queue_put(wrapper, esp_wifi_init); // 初始化wifi
 
     background_queue_put(wrapper, jobs_wifi_update);    // 获取wifi状态
     background_queue_put(wrapper, jobs_sntp_sync);      // 同步rtc
@@ -53,7 +54,7 @@ void app_start(void)
     background_queue_put(wrapper, jobs_dht11_update);   // 获取DHT11数据
 
     wifi_update_timer    = xTimerCreate("wifi_update_timer", pdMS_TO_TICKS(SECOND(2)), pdTRUE, jobs_wifi_update, timer_background_callback);
-    sntp_sync_timer      = xTimerCreate("sntp_sync_timer", pdMS_TO_TICKS(MINUTE(1)), pdTRUE, jobs_sntp_sync, timer_background_callback);
+    sntp_sync_timer      = xTimerCreate("sntp_sync_timer", pdMS_TO_TICKS(SECOND(2)), pdTRUE, jobs_sntp_sync, timer_background_callback);
     weather_update_timer = xTimerCreate("weather_update_timer", pdMS_TO_TICKS(MINUTE(30)), pdTRUE, jobs_weather_update, timer_background_callback);
     time_update_timer    = xTimerCreate("time_update_timer", pdMS_TO_TICKS(SECOND(1)), pdTRUE, jobs_time_update, timer_immediate_callback);
     dht11_update_timer   = xTimerCreate("dht11_update_timer", pdMS_TO_TICKS(SECOND(2)), pdTRUE, jobs_dht11_update, timer_background_callback);
