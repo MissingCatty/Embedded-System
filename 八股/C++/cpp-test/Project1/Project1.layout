@@ -1,0 +1,22 @@
+[
+    {
+        "caretX": 2,
+        "caretY": 36,
+        "filename": "C:/Repository/embedding-system-noob/八股/C++/cpp-test/Project1/main.cpp",
+        "focused": true,
+        "isOpen": true,
+        "left": 0,
+        "order": 1,
+        "top": 0
+    },
+    {
+        "caretX": 9,
+        "caretY": 11,
+        "filename": "C:/Repository/embedding-system-noob/八股/C++/cpp-test/Project1/person.h",
+        "focused": false,
+        "isOpen": true,
+        "left": 0,
+        "order": 0,
+        "top": 0
+    }
+]
