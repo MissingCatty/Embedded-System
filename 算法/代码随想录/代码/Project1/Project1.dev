@@ -1,7 +1,7 @@
 [Project]
 filename = Project1.dev
 name = Project1
-UnitCount = 6
+UnitCount = 4
 Type = 1
 Ver = 3
 Includes = 
@@ -51,20 +51,20 @@ Build = 0
 LanguageID = 1033
 CharsetID = 1252
 CompanyName = 
-FileVersion = 0.1
+FileVersion = 
 FileDescription = Developed using the Red Panda C++ IDE
 InternalName = 
 LegalCopyright = 
 LegalTrademarks = 
-OriginalFilename = Project1.exe
-ProductName = Project1
-ProductVersion = 0.1.1.1
+OriginalFilename = 
+ProductName = 
+ProductVersion = 
 AutoIncBuildNr = 0
 SyncProduct = 1
 
 
 [Unit1]
-FileName = person.cpp
+FileName = solution.cpp
 CompileCpp = 1
 Folder = 源文件
 Compile = 1
@@ -73,23 +73,10 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-RealEncoding = UTF-8
-
-
-[Unit2]
-FileName = student.h
-CompileCpp = 0
-Folder = 头文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
 RealEncoding = ASCII
 
 
-[Unit3]
+[Unit2]
 FileName = main.cpp
 CompileCpp = 1
 Folder = 源文件
@@ -99,11 +86,24 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-RealEncoding = UTF-8
+RealEncoding = ASCII
+
+
+[Unit3]
+FileName = catelogue/数组.png
+CompileCpp = 0
+Folder = 其他文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+RealEncoding = 
 
 
 [Unit4]
-FileName = route.h
+FileName = solution.h
 CompileCpp = 0
 Folder = 头文件
 Compile = 0
@@ -113,32 +113,6 @@ OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
 RealEncoding = ASCII
-
-
-[Unit5]
-FileName = student.cpp
-CompileCpp = 1
-Folder = 源文件
-Compile = 1
-Link = 1
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-RealEncoding = UTF-8
-
-
-[Unit6]
-FileName = person.h
-CompileCpp = 0
-Folder = 头文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-RealEncoding = UTF-8
 
 
 [CompilerSettings]
