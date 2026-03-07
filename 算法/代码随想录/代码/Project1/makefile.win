@@ -14,10 +14,10 @@ CFLAGS   = $(INCS) "-g3" "-fno-ms-extensions" "-pipe" "-Wall" "-Werror=implicit-
 NASM_FLAGS   =  "-f" "elf64" "-g"
 WINDRESFLAGS = 
 RES      = Project1_private.res
-OBJ      = solution.o main.o $(RES)
+OBJ      = utils.o main.o solution.o $(RES)
 BIN      = Project1.exe
-LINKOBJ  = "solution.o" "main.o" "Project1_private.res"
-CLEANOBJ = "solution.o" "main.o" "Project1_private.res" "Project1.exe"
+LINKOBJ  = "utils.o" "main.o" "solution.o" "Project1_private.res"
+CLEANOBJ = "utils.o" "main.o" "solution.o" "Project1_private.res" "Project1.exe"
 
 .PHONY: all all-before all-after clean clean-custom
 
@@ -30,11 +30,14 @@ Project1.exe: $(OBJ)
 
 	$(CXX) $(LINKOBJ) -o "Project1.exe" $(LIBS)
 
+utils.o: utils.cpp utils.h
+	$(CXX) -c "utils.cpp" -o "utils.o" $(CXXFLAGS) 
+
+main.o: main.cpp solution.h utils.h
+	$(CXX) -c "main.cpp" -o "main.o" $(CXXFLAGS) 
+
 solution.o: solution.cpp solution.h
 	$(CXX) -c "solution.cpp" -o "solution.o" $(CXXFLAGS)  -finput-charset=UTF-8 -fexec-charset=gbk
-
-main.o: main.cpp solution.h
-	$(CXX) -c "main.cpp" -o "main.o" $(CXXFLAGS) 
 
 Project1_private.res: Project1_private.rc 
 	$(WINDRES) -i "Project1_private.rc" --input-format=rc -o "Project1_private.res" -O coff $(WINDRESFLAGS) 
