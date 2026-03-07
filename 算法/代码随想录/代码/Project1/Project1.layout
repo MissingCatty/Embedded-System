@@ -1,0 +1,32 @@
+[
+    {
+        "caretX": 11,
+        "caretY": 43,
+        "filename": "C:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/solution.cpp",
+        "focused": false,
+        "isOpen": true,
+        "left": 0,
+        "order": 2,
+        "top": 0
+    },
+    {
+        "caretX": 16,
+        "caretY": 12,
+        "filename": "C:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/main.cpp",
+        "focused": false,
+        "isOpen": true,
+        "left": 0,
+        "order": 0,
+        "top": 0
+    },
+    {
+        "caretX": 58,
+        "caretY": 14,
+        "filename": "C:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/solution.h",
+        "focused": true,
+        "isOpen": true,
+        "left": 84,
+        "order": 1,
+        "top": 0
+    }
+]
