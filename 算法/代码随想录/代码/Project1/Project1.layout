@@ -1,17 +1,17 @@
 [
     {
-        "caretX": 13,
-        "caretY": 3,
+        "caretX": 2,
+        "caretY": 10,
         "filename": "D:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/utils.cpp",
-        "focused": true,
+        "focused": false,
         "isOpen": true,
         "left": 0,
-        "order": 4,
+        "order": 3,
         "top": 0
     },
     {
-        "caretX": 10,
-        "caretY": 11,
+        "caretX": 17,
+        "caretY": 7,
         "filename": "D:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/solution.h",
         "focused": false,
         "isOpen": true,
@@ -20,33 +20,33 @@
         "top": 0
     },
     {
-        "caretX": 16,
-        "caretY": 1,
+        "caretX": 1,
+        "caretY": 11,
         "filename": "D:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/utils.h",
         "focused": false,
         "isOpen": true,
         "left": 0,
-        "order": 3,
+        "order": 4,
         "top": 0
     },
     {
-        "caretX": 2,
-        "caretY": 26,
+        "caretX": 27,
+        "caretY": 28,
         "filename": "D:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/main.cpp",
         "focused": false,
         "isOpen": true,
         "left": 0,
         "order": 1,
-        "top": 408
+        "top": 477
     },
     {
-        "caretX": 45,
-        "caretY": 74,
+        "caretX": 32,
+        "caretY": 85,
         "filename": "D:/Repository/embedding-system-noob/算法/代码随想录/代码/Project1/solution.cpp",
-        "focused": false,
+        "focused": true,
         "isOpen": true,
         "left": 0,
         "order": 2,
-        "top": 3315
+        "top": 2968
     }
 ]
