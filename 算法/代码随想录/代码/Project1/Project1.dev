@@ -73,7 +73,11 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
+<<<<<<< HEAD
+RealEncoding = ASCII
+=======
 RealEncoding = UTF-8
+>>>>>>> origin/master
 
 
 [Unit2]
@@ -99,6 +103,22 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
+<<<<<<< HEAD
+RealEncoding = ASCII
+
+
+[Unit3]
+FileName = utils.h
+CompileCpp = 0
+Folder = 头文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+=======
+>>>>>>> origin/master
 RealEncoding = UTF-8
 
 

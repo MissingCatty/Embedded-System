@@ -33,7 +33,7 @@ Project1.exe: $(OBJ)
 utils.o: utils.cpp utils.h
 	$(CXX) -c "utils.cpp" -o "utils.o" $(CXXFLAGS) 
 
-main.o: main.cpp solution.h utils.h
+main.o: main.cpp
 	$(CXX) -c "main.cpp" -o "main.o" $(CXXFLAGS) 
 
 solution.o: solution.cpp solution.h
