@@ -12,6 +12,7 @@
 *.d
 
 .obsidian/
+copilot/
 
 FreeRTOSv202212.01/
 《FreeRTOS源码与应用》例程源码-F103/
