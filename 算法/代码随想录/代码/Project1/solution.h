@@ -4,7 +4,7 @@
 #include<vector>
 using namespace std;
 
-#define TEST 2-6
+#define TEST 2-7
 
 class Solution {
 public:
@@ -13,6 +13,7 @@ public:
 	vector<int> sortedSquares(vector<int>& nums); // 2-4
 	int minSubArrayLen(int target, vector<int>& nums); // 2-5
 	vector<vector<int>> generateMatrix(int n); // 2-6
+	int buyGround(void); // 2-7
 };
 
 #endif

@@ -9,13 +9,13 @@ Libs =
 Bins = 
 ResourceIncludes = 
 MakeIncludes = 
-PrivateResource = Project1_private.rc
+PrivateResource = 
 Compiler = 
 CppCompiler = 
 Linker = 
 ResourceCommand = 
 IsCpp = 1
-Icon = app.ico
+Icon = 
 ExeOutput = 
 ObjectOutput = 
 LogOutput = 
@@ -64,20 +64,16 @@ SyncProduct = 1
 
 
 [Unit1]
-FileName = solution.cpp
-CompileCpp = 1
-Folder = 源文件
-Compile = 1
-Link = 1
+FileName = utils.h
+CompileCpp = 0
+Folder = 头文件
+Compile = 0
+Link = 0
 Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-<<<<<<< HEAD
-RealEncoding = ASCII
-=======
 RealEncoding = UTF-8
->>>>>>> origin/master
 
 
 [Unit2]
@@ -90,52 +86,10 @@ Priority = 1000
 OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
-RealEncoding = UTF-8
-
-
-[Unit3]
-FileName = solution.h
-CompileCpp = 0
-Folder = 头文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-<<<<<<< HEAD
 RealEncoding = ASCII
 
 
 [Unit3]
-FileName = utils.h
-CompileCpp = 0
-Folder = 头文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-=======
->>>>>>> origin/master
-RealEncoding = UTF-8
-
-
-[Unit4]
-FileName = catelogue/数组.png
-CompileCpp = 0
-Folder = 其他文件
-Compile = 0
-Link = 0
-Priority = 1000
-OverrideBuildCmd = 0
-BuildCmd = 
-FileEncoding = PROJECT
-RealEncoding = ASCII
-
-
-[Unit5]
 FileName = solution.cpp
 CompileCpp = 1
 Folder = 源文件
@@ -146,6 +100,32 @@ OverrideBuildCmd = 0
 BuildCmd = 
 FileEncoding = PROJECT
 RealEncoding = UTF-8
+
+
+[Unit4]
+FileName = solution.h
+CompileCpp = 0
+Folder = 头文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+RealEncoding = ASCII
+
+
+[Unit5]
+FileName = solution.h
+CompileCpp = 0
+Folder = 头文件
+Compile = 0
+Link = 0
+Priority = 1000
+OverrideBuildCmd = 0
+BuildCmd = 
+FileEncoding = PROJECT
+RealEncoding = 
 
 
 [Unit6]

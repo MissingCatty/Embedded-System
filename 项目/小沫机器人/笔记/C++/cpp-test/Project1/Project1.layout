@@ -1,22 +1,22 @@
 [
     {
-        "caretX": 13,
-        "caretY": 14,
-        "filename": "C:/Repository/embedding-system-noob/八股/C++/cpp-test/Project1/main.cpp",
+        "caretX": 2,
+        "caretY": 29,
+        "filename": "C:/Repository/embedding-system-noob/项目/小沫机器人/笔记/C++/cpp-test/Project1/main.cpp",
         "focused": true,
         "isOpen": true,
         "left": 0,
-        "order": 1,
+        "order": 0,
         "top": 0
     },
     {
-        "caretX": 9,
-        "caretY": 11,
-        "filename": "C:/Repository/embedding-system-noob/八股/C++/cpp-test/Project1/person.h",
+        "caretX": 17,
+        "caretY": 5,
+        "filename": "C:/Repository/embedding-system-noob/项目/小沫机器人/笔记/C++/cpp-test/Project1/route.h",
         "focused": false,
         "isOpen": true,
         "left": 0,
-        "order": 0,
+        "order": 1,
         "top": 0
     }
 ]

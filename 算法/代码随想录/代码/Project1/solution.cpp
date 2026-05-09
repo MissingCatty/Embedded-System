@@ -1,5 +1,7 @@
 #include "solution.h"
 #include <math.h>
+#include <iostream>
+#include <climits>
 using namespace std;
 
 // 2-2
@@ -110,4 +112,39 @@ vector<vector<int>> Solution::generateMatrix(int n) {
 	}
 	
 	return matrix;
+}
+
+// 2-7
+int Solution::buyGround(void)
+{
+	int n,m;
+	cin >> n >> m;
+	
+	// 保存行和与列和，以及总和
+	int value, total = 0;
+	vector<int> row_sum(n, 0);
+	vector<int> col_sum(m, 0);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			cin >> value;
+			total += value;
+			row_sum[i] += value;
+			col_sum[j] += value;
+		}
+	}
+	
+	// 遍历行
+	int current_sum = 0, diff = INT_MAX;
+	for(int i=0;i<n-1;i++){
+		current_sum += row_sum[i];
+		diff = min(diff, abs(total - 2*current_sum));
+	}
+	
+	current_sum = 0;
+	for(int j=0;j<m-1;j++){
+		current_sum += col_sum[j];
+		diff = min(diff, abs(total - 2*current_sum));
+	}
+	
+	return diff;
 }

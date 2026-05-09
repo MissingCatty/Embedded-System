@@ -5,6 +5,8 @@
 
 using namespace std;
 
+static int a;
+
 int main(void)
 {
 #ifdef DEMO01
@@ -33,4 +35,5 @@ int main(void)
 	Person *person = new Student();
 	delete(person);
 #endif
+	cout << a << endl;
 }

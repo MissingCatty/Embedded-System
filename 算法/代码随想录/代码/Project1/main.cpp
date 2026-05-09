@@ -21,5 +21,9 @@ int main(void)
 #elif TEST == 2-5
 	vector<int> nums1 = {2,3,1,2,4,3};
 	cout << sol.minSubArrayLen(-1, nums1) << endl;
+#elif TEST == 2-6
+#elif TEST == 2-7
+	int res = sol.buyGround();
+	cout << res << endl;
 #endif
 }
